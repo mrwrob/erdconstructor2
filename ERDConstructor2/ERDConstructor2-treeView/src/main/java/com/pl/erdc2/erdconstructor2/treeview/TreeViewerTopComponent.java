@@ -54,9 +54,7 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
         em.setRootContext(new AbstractNode(Children.create(new EntityChildFactory(), true)));
         
         setLayout(new BorderLayout());
-       
-        BeanTreeView entityViewer = new BeanTreeView();
-        
+        BeanTreeView entityViewer = new BeanTreeView();      
         add(entityViewer, BorderLayout.CENTER);
         
         associateLookup(ExplorerUtils.createLookup(em, getActionMap()));

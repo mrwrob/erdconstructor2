@@ -9,17 +9,23 @@ import java.awt.Image;
 import java.beans.IntrospectionException;
 import org.openide.nodes.BeanNode;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
  * @author Piotrek
  */
+@Messages({
+    "# {0} - entity",
+    "EntityDefaultName=Entity {0}"
+})
 public class EntityNode extends BeanNode<Entity> {
-
+    private static int ct=0;
+    
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean);
-        bean.setName("Entity");
-        setDisplayName ("Entity");
+        bean.setName(Bundle.EntityDefaultName(++ct));
+        setDisplayName(bean.getName());
     }
     
     @Override
