@@ -45,6 +45,11 @@
             <scope>test</scope>
         </dependency>
         -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ERDConstructor2-treeView</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -58,6 +58,8 @@
     <modules>
         <module>branding</module>
         <module>application</module>
+        <module>ERDConstructor2-api</module>
+        <module>ERDConstructor2-treeView</module>
     </modules>
 
     <properties>
