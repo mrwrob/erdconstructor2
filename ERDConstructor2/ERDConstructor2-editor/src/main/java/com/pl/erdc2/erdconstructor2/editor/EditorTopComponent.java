@@ -3,61 +3,68 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pl.erdc2.erdconstructor2.treeview;
+package com.pl.erdc2.erdconstructor2.editor;
 
-import com.pl.erdc2.erdconstructor2.api.EntityChildFactory;
+import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BorderLayout;
+import java.util.Collection;
+import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.ExplorerUtils;
-import org.openide.explorer.view.BeanTreeView;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//com.pl.erdc2.erdconstructor2.treeview//TreeViewer//EN",
+        dtd = "-//com.pl.erdc2.erdconstructor2.editor//editor//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "TreeViewerTopComponent",
-        //iconBase="SET/PATH/TO/ICON/HERE", 
+        preferredID = "EditorTopComponent",
+        iconBase = "com/pl/erdc2/erdconstructor2/editor/graphIcon2.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "explorer", openAtStartup = true)
-@ActionID(category = "Window", id = "com.pl.erdc2.erdconstructor2.treeview.TreeViewerTopComponent")
-@ActionReference(path = "Menu/Window" , position = 0)
+@TopComponent.Registration(mode = "editor", openAtStartup = true)
+@ActionID(category = "Window", id = "com.pl.erdc2.erdconstructor2.editor.EditorTopComponent")
+@ActionReference(path = "Menu/Window" , position = 1)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_TreeViewerAction",
-        preferredID = "TreeViewerTopComponent"
+        displayName = "#CTL_editorAction",
+        preferredID = "editorTopComponent"
 )
 @Messages({
-    "CTL_TreeViewerAction=TreeViewer",
-    "CTL_TreeViewerTopComponent=TreeViewer Window",
-    "HINT_TreeViewerTopComponent=This is a TreeViewer window"
+    "CTL_editorAction=Diagram editor",
+    "CTL_editorTopComponent=Diagram editor",
+    "HINT_editorTopComponent=This is a erd diagram editor window"
 })
-public final class TreeViewerTopComponent extends TopComponent implements ExplorerManager.Provider{
+public final class EditorTopComponent extends TopComponent implements LookupListener{
     private final ExplorerManager em;
 
-    public TreeViewerTopComponent() {
-        em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
-
+    public EditorTopComponent() {
         initComponents();
-        setName(Bundle.CTL_TreeViewerTopComponent());
-        setToolTipText(Bundle.HINT_TreeViewerTopComponent());
-        
+        setName(Bundle.CTL_editorTopComponent());
+        setToolTipText(Bundle.HINT_editorTopComponent());
         setLayout(new BorderLayout());
-        BeanTreeView entityViewer = new BeanTreeView();      
-        add(entityViewer, BorderLayout.CENTER);
+
+        em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
         
-        associateLookup(ExplorerUtils.createLookup(em, getActionMap()));
+        GraphSceneImpl scene = new GraphSceneImpl();
+
+        JScrollPane shapePane = new JScrollPane();
+
+        shapePane.setViewportView(scene.createView());
+        
+        add(shapePane, BorderLayout.CENTER);
+        //add(scene.createSatelliteView(), BorderLayout.WEST);
     }
 
     /**
@@ -82,22 +89,34 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    Lookup.Result<Entity> allEntitiesInLookup;
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        //System.out.println("Result changed ");
+        allEntitiesInLookup.allItems();
+        if(!allEntitiesInLookup.allInstances().isEmpty()){
+            Entity entity = allEntitiesInLookup.allInstances().iterator().next();
+            //Selected entity
+        } 
+    }
+    
     @Override
     public void componentOpened() {
-        
-        // TODO add custom code on component opening
+        allEntitiesInLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
+        allEntitiesInLookup.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        allEntitiesInLookup.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        // TODO store your settings
     }
 
     void readProperties(java.util.Properties p) {
@@ -105,8 +124,5 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
         // TODO read your settings according to their version
     }
 
-    @Override
-    public ExplorerManager getExplorerManager() {
-        return em;
-    }
+    
 }
