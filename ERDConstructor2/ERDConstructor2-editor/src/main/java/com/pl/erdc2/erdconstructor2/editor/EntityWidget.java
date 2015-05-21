@@ -5,6 +5,7 @@
  */
 package com.pl.erdc2.erdconstructor2.editor;
 
+import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,11 +17,9 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
-import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.border.Border;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.model.ObjectState;
-import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -28,38 +27,100 @@ import org.netbeans.api.visual.widget.Widget;
  * @author Piotrek
  */
 public class EntityWidget extends Widget{
-    boolean isSelected=false;
     private String title;
+    private EntityNode bean;
     
-    public EntityWidget(Scene scene) {
+    public EntityWidget(GraphSceneImpl scene, EntityNode _bean){
         super(scene);
+        bean=_bean;
         title="";
         setCheckClipping(true);
         this.setMinimumSize(new Dimension(100,100));
-        getActions().addAction(ActionFactory.createResizeAction());
-        getActions().addAction(ActionFactory.createMoveAction());
-        getActions().addAction(scene.createWidgetHoverAction());
+//        scene.getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
+//
+//        @Override
+//        public boolean isAimingAllowed(Widget widget, Point point, boolean bln) {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean isSelectionAllowed(Widget widget, Point point, boolean bln) {
+//            return true;
+//        }
+//
+//        @Override
+//        public void select(Widget widget, Point point, boolean bln) {
+//            widget.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//            System.out.println("selection");
+//        }
+//
+//    }));
+       
+       // getActions().addAction(ActionFactory.createMoveAction());
+        
+//        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
+//
+//            @Override
+//            public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isSelectionAllowed(Widget widget, Point localLocation, boolean invertSelection) {
+//                return true;
+//            }
+//
+//            @Override
+//            public void select(Widget widget, Point localLocation, boolean invertSelection) {
+//                System.out.println("Widget SELECTED"+invertSelection+"||"+widget+"||"+widget.getBounds().toString());
+//                
+//                if (invertSelection) { 
+//                    setBorder(BorderFactory.createEmptyBorder()); 
+//                } else { 
+//                    setBorder(BorderFactory.createLineBorder(2)); 
+//                } 
+//             
+//            }
+//        }, true));
+//        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
+//            @Override
+//            public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
+//                return true;
+//            }
+//            @Override
+//            public boolean isSelectionAllowed(Widget widget, Point localLocation, boolean invertSelection) {
+//                return true;
+//            }
+//            @Override
+//            public void select(Widget widget, Point localLocation, boolean invertSelection) {
+//                scene.setFocusedWidget(widget);
+//            }
+//        }));
+        
         
         Font f = new Font("Arial", Font.BOLD, FONT_SIZE);
         Map<TextAttribute, Object> attributes = new HashMap<>();
         attributes.put(TextAttribute.TRACKING, 0.05);
-        TAHOMA_BOLD = f.deriveFont(attributes);
+        ARIAL_BOLD = f.deriveFont(attributes);
         f = new Font("Calibri", Font.PLAIN, FONT_SIZE);
         CALIBRI =  f.deriveFont(attributes);
     }
     
     private static final Border RESIZE_BORDER = BorderFactory.createResizeBorder(8,Color.BLACK,true);
     private static final Border DEFAULT_BORDER = BorderFactory.createEmptyBorder(8);
-    final static int FONT_SIZE=14;
-    final static int ENTITY_TITLE_PADDING=10;
-    final static int ENTITY_TITLE_SIZE=2*ENTITY_TITLE_PADDING+FONT_SIZE-4;
-    final static int BORDER_ROUND=9;
-    final static Color ENTITY_BLUE=new Color(83, 117, 189);
-    final static Color ENTITY_BACKGROUND=new Color(236, 239, 248);
-    final Font TAHOMA_BOLD;
-    final Font CALIBRI;
-    final static Stroke BASIC_STROKE=new BasicStroke(1);
-    final static Stroke STROKE_2PX=new BasicStroke(2);
+    private final static int FONT_SIZE=14;
+    private final static int ENTITY_TITLE_PADDING=10;
+    private final static int ENTITY_TITLE_SIZE=2*ENTITY_TITLE_PADDING+FONT_SIZE-4;
+    private final static int BORDER_ROUND=10;
+    private final static Color ENTITY_SELECTED_BLUE=new Color(103, 135, 210);
+    private final static Color ENTITY_BLUE=new Color(83, 117, 189);
+    private final static Color ENTITY_BACKGROUND=new Color(236, 239, 248);
+    private final Font ARIAL_BOLD;
+    private final Font CALIBRI;
+    private final static Stroke BASIC_STROKE=new BasicStroke(1);
+    private final static Stroke STROKE_2PX=new BasicStroke(2);
+
+ 
     
     @Override
     protected void paintWidget(){
@@ -72,7 +133,10 @@ public class EntityWidget extends Widget{
         g2.setColor(ENTITY_BACKGROUND);
         g2.fillRoundRect(bounds.x, bounds.y, bounds.width-1, bounds.height-1,BORDER_ROUND,BORDER_ROUND);
         
-        g2.setColor(ENTITY_BLUE);
+        if(isSelected())
+            g2.setColor(ENTITY_SELECTED_BLUE); 
+        else
+            g2.setColor(ENTITY_BLUE);
         g2.fillRoundRect(bounds.x, bounds.y, bounds.width-1, ENTITY_TITLE_SIZE, BORDER_ROUND, BORDER_ROUND);
         g2.fillRect(bounds.x, bounds.y+10, bounds.width-1, ENTITY_TITLE_SIZE-10);
         
@@ -81,15 +145,19 @@ public class EntityWidget extends Widget{
         
         g2.setColor(Color.WHITE);
         g2.setStroke(BASIC_STROKE);
-        g2.drawLine(bounds.x+2, bounds.y+ENTITY_TITLE_SIZE-1, bounds.x+bounds.width-3, bounds.y+ENTITY_TITLE_SIZE-1);
+        g2.drawLine(bounds.x+2, bounds.y+ENTITY_TITLE_SIZE, bounds.x+bounds.width-3, bounds.y+ENTITY_TITLE_SIZE);
         
-        g2.setFont(TAHOMA_BOLD);
+        g2.setFont(ARIAL_BOLD);
         g2.setColor(Color.WHITE); 
         g2.setStroke(BASIC_STROKE);
         double textWidth = g2.getFont().getStringBounds(s, g2.getFontRenderContext()).getWidth();
         double textPosition = (bounds.width)/2-textWidth/2;
         g2.drawString(s, Math.round(textPosition)+bounds.x, bounds.y+FONT_SIZE+5);
      
+    }
+    
+    public boolean isSelected(){
+        return this.getScene().getFocusedWidget().equals(this);
     }
     
     @Override
@@ -99,12 +167,8 @@ public class EntityWidget extends Widget{
                     newState.isSelected() ? (
                     newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER) : (
                     newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
-       
-      if(newState.isSelected()){
-          this.isSelected=true;
-      }else{
-        this.isSelected=false;
-        }
+        if(newState.isFocused() && newState.isFocused()!=previousState.isFocused())
+            System.out.println("jest zaznaczone WIDGET"+this);
      }
 
     public String getTitle() {
@@ -113,5 +177,9 @@ public class EntityWidget extends Widget{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public EntityNode getBean() {
+        return bean;
     }
 }
