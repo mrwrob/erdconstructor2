@@ -7,9 +7,7 @@ package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
-import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BorderLayout;
-import java.util.Collection;
 import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -64,7 +62,6 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         shapePane.setViewportView(scene.createView());
         
         add(shapePane, BorderLayout.CENTER);
-        //add(scene.createSatelliteView(), BorderLayout.WEST);
     }
 
     /**
@@ -94,11 +91,9 @@ public final class EditorTopComponent extends TopComponent implements LookupList
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        //System.out.println("Result changed ");
         allEntitiesInLookup.allItems();
         if(!allEntitiesInLookup.allInstances().isEmpty()){
             Entity entity = allEntitiesInLookup.allInstances().iterator().next();
-            //Selected entity
         } 
     }
     

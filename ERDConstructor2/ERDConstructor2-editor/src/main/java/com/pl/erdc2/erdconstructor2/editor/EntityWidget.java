@@ -64,7 +64,7 @@ public class EntityWidget extends Widget{
     @Override
     protected void paintWidget(){
         final Graphics2D g2 = getGraphics();
-         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
        
         final Rectangle bounds = getClientArea();
         String s = title.length()>0 ? title : "Encja";
@@ -96,14 +96,13 @@ public class EntityWidget extends Widget{
     public void notifyStateChanged(ObjectState previousState, ObjectState newState) {
         super.notifyStateChanged(previousState, newState);
         this.setBorder(
-                    newState.isSelected() ? (
-                    newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER) : (
-                    newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
-       
-      if(newState.isSelected()){
-          this.isSelected=true;
-      }else{
-        this.isSelected=false;
+                    newState.isSelected() ? 
+                    (newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER) : 
+                    (newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
+        if(newState.isSelected()){
+            this.isSelected=true;
+        }else{
+            this.isSelected=false;
         }
      }
 

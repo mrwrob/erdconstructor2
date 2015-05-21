@@ -8,7 +8,6 @@ package com.pl.erdc2.erdconstructor2.editor;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.beans.PropertyChangeEvent;
 import org.netbeans.api.visual.graph.GraphScene;
-import org.openide.nodes.BeanNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeEvent;
 import org.openide.nodes.NodeListener;
