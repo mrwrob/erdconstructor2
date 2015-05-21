@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -22,81 +16,16 @@ import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.model.ObjectState;
 import org.netbeans.api.visual.widget.Widget;
 
-/**
- *
- * @author Piotrek
- */
+
 public class EntityWidget extends Widget{
     private String title;
-    private EntityNode bean;
+    private final EntityNode bean;
     
     public EntityWidget(GraphSceneImpl scene, EntityNode _bean){
         super(scene);
         bean=_bean;
         title="";
-        setCheckClipping(true);
-        this.setMinimumSize(new Dimension(100,100));
-//        scene.getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
-//
-//        @Override
-//        public boolean isAimingAllowed(Widget widget, Point point, boolean bln) {
-//            return true;
-//        }
-//
-//        @Override
-//        public boolean isSelectionAllowed(Widget widget, Point point, boolean bln) {
-//            return true;
-//        }
-//
-//        @Override
-//        public void select(Widget widget, Point point, boolean bln) {
-//            widget.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//            System.out.println("selection");
-//        }
-//
-//    }));
-       
-       // getActions().addAction(ActionFactory.createMoveAction());
-        
-//        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
-//
-//            @Override
-//            public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean isSelectionAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-//                return true;
-//            }
-//
-//            @Override
-//            public void select(Widget widget, Point localLocation, boolean invertSelection) {
-//                System.out.println("Widget SELECTED"+invertSelection+"||"+widget+"||"+widget.getBounds().toString());
-//                
-//                if (invertSelection) { 
-//                    setBorder(BorderFactory.createEmptyBorder()); 
-//                } else { 
-//                    setBorder(BorderFactory.createLineBorder(2)); 
-//                } 
-//             
-//            }
-//        }, true));
-//        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
-//            @Override
-//            public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-//                return true;
-//            }
-//            @Override
-//            public boolean isSelectionAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-//                return true;
-//            }
-//            @Override
-//            public void select(Widget widget, Point localLocation, boolean invertSelection) {
-//                scene.setFocusedWidget(widget);
-//            }
-//        }));
-        
+        setCheckClipping(true);   
         
         Font f = new Font("Arial", Font.BOLD, FONT_SIZE);
         Map<TextAttribute, Object> attributes = new HashMap<>();
@@ -112,7 +41,7 @@ public class EntityWidget extends Widget{
     private final static int ENTITY_TITLE_PADDING=10;
     private final static int ENTITY_TITLE_SIZE=2*ENTITY_TITLE_PADDING+FONT_SIZE-4;
     private final static int BORDER_ROUND=10;
-    private final static Color ENTITY_SELECTED_BLUE=new Color(103, 135, 210);
+    private final static Color ENTITY_SELECTED_BLUE=new Color(103, 145, 215);
     private final static Color ENTITY_BLUE=new Color(83, 117, 189);
     private final static Color ENTITY_BACKGROUND=new Color(236, 239, 248);
     private final Font ARIAL_BOLD;
@@ -164,11 +93,9 @@ public class EntityWidget extends Widget{
     public void notifyStateChanged(ObjectState previousState, ObjectState newState) {
         super.notifyStateChanged(previousState, newState);
         this.setBorder(
-                    newState.isSelected() ? (
-                    newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER) : (
-                    newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
-        if(newState.isFocused() && newState.isFocused()!=previousState.isFocused())
-            System.out.println("jest zaznaczone WIDGET"+this);
+                    newState.isSelected() ? 
+                    (newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER) : 
+                    (newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
      }
 
     public String getTitle() {

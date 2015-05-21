@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.Entity;
@@ -13,8 +8,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
-import java.util.Collection;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -23,7 +16,6 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.ExplorerUtils;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
@@ -124,15 +116,8 @@ public final class EditorTopComponent extends TopComponent implements LookupList
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        //System.out.println("Result changed ");
-        if(entitesLookup.allItems().size()==1)
         if(!entitesLookup.allInstances().isEmpty()){
-            Entity entity = entitesLookup.allInstances().iterator().next();
-            //scene.
             this.repaint();
-            //em.getRootContext().getLookup(). getRootContext().getLookup().
-                    
-//Selected entity
         } 
     }
     
@@ -160,7 +145,6 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     
     private void addEntityButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
         if(em!=null){
-            System.out.println("Dodano node");
             Entity en = new Entity();
             EntityNode node = new EntityNode(en);
             Node[] toAdd = {node};
