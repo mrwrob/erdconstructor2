@@ -20,15 +20,16 @@ import org.openide.util.Utilities;
 
 public class GraphSceneImpl extends GraphScene implements LookupListener{
     private final LayerWidget mainLayer;
-    private final Random r;
+    private final Random random;
     private final ExplorerManager em;
     private final LayerWidget connectionLayer;
     private final LayerWidget interactionLayer;
     private final Lookup.Result<EntityNode> entitesLookup;
 
 
+    
     public GraphSceneImpl() {
-        this.r = new Random();
+        this.random = new Random();
         mainLayer = new LayerWidget(this);
         connectionLayer = new LayerWidget(this);
         interactionLayer = new LayerWidget(this);
@@ -53,10 +54,6 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
             }
         }
     }
-
-    public void addEntity(EntityNode en){
-        this.attachNodeWidget(en);
-    }
     
     @Override
     protected Widget attachNodeWidget(Object n) {
@@ -73,7 +70,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         EntityWidget widget = new EntityWidget(this, bean);
         widget.setTitle(entity.getName());
         widget.setPreferredSize(new Dimension(200, 100));
-        widget.setPreferredLocation(new Point(10+r.nextInt(400), 10+r.nextInt(400)));
+        widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
        
         widget.getActions().addAction(this.createWidgetHoverAction());
         widget.getActions().addAction(ActionFactory.createResizeAction());
