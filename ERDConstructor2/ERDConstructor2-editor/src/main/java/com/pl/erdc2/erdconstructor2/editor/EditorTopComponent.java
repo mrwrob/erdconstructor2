@@ -1,18 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.IntrospectionException;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
+import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -46,7 +52,7 @@ import org.openide.util.Utilities;
 })
 public final class EditorTopComponent extends TopComponent implements LookupListener{
     private final ExplorerManager em;
-
+    GraphSceneImpl scene;
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_editorTopComponent());
@@ -55,13 +61,29 @@ public final class EditorTopComponent extends TopComponent implements LookupList
 
         em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
         
-        GraphSceneImpl scene = new GraphSceneImpl();
-
+        scene = new GraphSceneImpl();
         JScrollPane shapePane = new JScrollPane();
-
         shapePane.setViewportView(scene.createView());
         
+        JToolBar toolbar = new JToolBar();
+        
+        Image addEntityImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/addEntityIcon.png");
+        JButton addEntityButton = new JButton("", new ImageIcon(addEntityImage));
+        addEntityButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    addEntityButtonActionPerformed(evt);
+                } catch (IntrospectionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        });
+        toolbar.add(addEntityButton);
+        toolbar.addSeparator();
+        
         add(shapePane, BorderLayout.CENTER);
+        add(toolbar, BorderLayout.NORTH);
     }
 
     /**
@@ -87,25 +109,24 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    Lookup.Result<Entity> allEntitiesInLookup;
+    Lookup.Result<Entity> entitesLookup;
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        allEntitiesInLookup.allItems();
-        if(!allEntitiesInLookup.allInstances().isEmpty()){
-            Entity entity = allEntitiesInLookup.allInstances().iterator().next();
+        if(!entitesLookup.allInstances().isEmpty()){
+            this.repaint();
         } 
     }
     
     @Override
     public void componentOpened() {
-        allEntitiesInLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
-        allEntitiesInLookup.addLookupListener(this);
+        entitesLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
+        entitesLookup.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        allEntitiesInLookup.removeLookupListener(this);
+        entitesLookup.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -118,6 +139,13 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-
     
+    private void addEntityButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
+        if(em!=null){
+            Entity en = new Entity();
+            EntityNode node = new EntityNode(en);
+            Node[] toAdd = {node};
+            em.getRootContext().getChildren().add(toAdd);
+        }
+    } 
 }
