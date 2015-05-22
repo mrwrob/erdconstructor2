@@ -6,6 +6,7 @@
 package com.pl.erdc2.erdconstructor2.treeview;
 
 import com.pl.erdc2.erdconstructor2.api.EntityChildFactory;
+import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import java.awt.BorderLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -32,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
 )
 @TopComponent.Registration(mode = "explorer", openAtStartup = true)
 @ActionID(category = "Window", id = "com.pl.erdc2.erdconstructor2.treeview.TreeViewerTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" , position = 0)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_TreeViewerAction",
         preferredID = "TreeViewerTopComponent"
@@ -46,12 +47,11 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
     private final ExplorerManager em;
 
     public TreeViewerTopComponent() {
-        this.em = new ExplorerManager();
+        em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
+
         initComponents();
         setName(Bundle.CTL_TreeViewerTopComponent());
         setToolTipText(Bundle.HINT_TreeViewerTopComponent());
-        
-        em.setRootContext(new AbstractNode(Children.create(new EntityChildFactory(), true)));
         
         setLayout(new BorderLayout());
         BeanTreeView entityViewer = new BeanTreeView();      
@@ -84,6 +84,7 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
+        
         // TODO add custom code on component opening
     }
 

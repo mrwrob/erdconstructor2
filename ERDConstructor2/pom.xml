@@ -60,6 +60,7 @@
         <module>application</module>
         <module>ERDConstructor2-api</module>
         <module>ERDConstructor2-treeView</module>
+        <module>ERDConstructor2-editor</module>
     </modules>
 
     <properties>
