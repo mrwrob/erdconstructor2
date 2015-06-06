@@ -1,5 +1,6 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
+import com.pl.erdc2.erdconstructor2.api.ColumnChildFactory;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
@@ -16,6 +17,8 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
@@ -84,6 +87,8 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         
         add(shapePane, BorderLayout.CENTER);
         add(toolbar, BorderLayout.NORTH);
+        
+        associateLookup(ExplorerUtils.createLookup(em, getActionMap()));
     }
 
     /**
@@ -143,7 +148,7 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     private void addEntityButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
         if(em!=null){
             Entity en = new Entity();
-            EntityNode node = new EntityNode(en);
+            EntityNode node = new EntityNode(en, Children.create(new ColumnChildFactory(), true));
             Node[] toAdd = {node};
             em.getRootContext().getChildren().add(toAdd);
         }
