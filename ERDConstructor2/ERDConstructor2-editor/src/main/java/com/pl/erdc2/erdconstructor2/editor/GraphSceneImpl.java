@@ -16,6 +16,7 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
 
 
 public class GraphSceneImpl extends GraphScene implements LookupListener{
@@ -25,10 +26,11 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
     private final LayerWidget connectionLayer;
     private final LayerWidget interactionLayer;
     private final Lookup.Result<EntityNode> entitesLookup;
-
+    private final TopComponent associatedTopComponent;
 
     
-    public GraphSceneImpl() {
+    public GraphSceneImpl(TopComponent tc) {
+        associatedTopComponent = tc;
         this.random = new Random();
         mainLayer = new LayerWidget(this);
         connectionLayer = new LayerWidget(this);
@@ -68,7 +70,6 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         entity = bean.getLookup().lookup(Entity.class);
         
         EntityWidget widget = new EntityWidget(this, bean);
-        widget.setTitle(entity.getName());
         widget.setPreferredSize(new Dimension(200, 100));
         widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
        
@@ -76,7 +77,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         widget.getActions().addAction(ActionFactory.createResizeAction());
         widget.getActions().addAction(new MySelectWidgetAction(em));
         widget.getActions().addAction( ActionFactory.createAlignWithMoveAction(mainLayer,interactionLayer,ActionFactory.createDefaultAlignWithMoveDecorator()));
-
+        widget.recalculateMinSize();
         mainLayer.addChild(widget);
         return widget;
     }
@@ -116,5 +117,14 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
             
         }
     }
+
+    public LayerWidget getMainLayer() {
+        return mainLayer;
+    }
+
+    public TopComponent getAssociatedTopComponent() {
+        return associatedTopComponent;
+    }
+    
 }
 

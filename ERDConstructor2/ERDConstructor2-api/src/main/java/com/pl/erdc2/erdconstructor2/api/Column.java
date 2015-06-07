@@ -18,7 +18,7 @@ public class Column extends Observable{
     public void setName(String name) {
         this.name = name;
         setChanged();
-        notifyObservers();
+        notifyObservers("name");
     }
 
     public String getDescription() {
@@ -27,6 +27,8 @@ public class Column extends Observable{
 
     public void setDescription(String description) {
         this.description = description;
+        setChanged();
+        notifyObservers("description");
     }
 
     public boolean isPrimary() {
@@ -35,6 +37,8 @@ public class Column extends Observable{
 
     public void setPrimary(boolean primary) {
         this.primary = primary;
+        setChanged();
+        notifyObservers("primary");
     }
 
     public String getType() {
@@ -43,5 +47,7 @@ public class Column extends Observable{
 
     public void setType(String type) {
         this.type = type;
+        setChanged();
+        notifyObservers("type");
     }
 }

@@ -2,7 +2,6 @@ package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.beans.PropertyChangeEvent;
-import org.netbeans.api.visual.graph.GraphScene;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeEvent;
 import org.openide.nodes.NodeListener;
@@ -14,9 +13,9 @@ import org.openide.nodes.NodeReorderEvent;
  * @author Piotrek
  */
 public class EntityNodeRootNodeListener implements NodeListener{
-    private final GraphScene gs;
+    private final GraphSceneImpl gs;
 
-    public EntityNodeRootNodeListener(GraphScene _gs) {
+    public EntityNodeRootNodeListener(GraphSceneImpl _gs) {
         gs = _gs;
     }
     
@@ -24,6 +23,8 @@ public class EntityNodeRootNodeListener implements NodeListener{
     public void childrenAdded(NodeMemberEvent ev) {
         for(Node n : ev.getDelta()){
             if(n instanceof EntityNode){
+                EntityNode en = (EntityNode)n;
+                en.addNodeListener(new ColumnNodeListener((gs)));
                 gs.addNode(n);
                 gs.validate();
             }
