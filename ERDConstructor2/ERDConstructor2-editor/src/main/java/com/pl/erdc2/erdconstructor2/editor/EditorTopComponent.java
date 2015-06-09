@@ -64,7 +64,7 @@ public final class EditorTopComponent extends TopComponent implements LookupList
 
         em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
         
-        scene = new GraphSceneImpl();
+        scene = new GraphSceneImpl(this);
         JScrollPane shapePane = new JScrollPane();
         shapePane.setViewportView(scene.createView());
         
