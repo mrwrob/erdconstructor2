@@ -1,10 +1,15 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
+import com.pl.erdc2.erdconstructor2.api.Column;
+import com.pl.erdc2.erdconstructor2.api.ColumnNode;
+import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -15,31 +20,32 @@ import org.netbeans.api.visual.border.Border;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.model.ObjectState;
 import org.netbeans.api.visual.widget.Widget;
+import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 
 
 public class EntityWidget extends Widget{
-    private String title;
     private final EntityNode bean;
     
     public EntityWidget(GraphSceneImpl scene, EntityNode _bean){
         super(scene);
         bean=_bean;
-        title="";
         setCheckClipping(true);   
         
-        Font f = new Font("Arial", Font.BOLD, FONT_SIZE);
+        Font f = new Font("Arial", Font.BOLD, HEADER_FONT_SIZE);
         Map<TextAttribute, Object> attributes = new HashMap<>();
         attributes.put(TextAttribute.TRACKING, 0.05);
         ARIAL_BOLD = f.deriveFont(attributes);
         f = new Font("Calibri", Font.PLAIN, FONT_SIZE);
-        CALIBRI =  f.deriveFont(attributes);
+        CALIBRI =  f;//f.deriveFont(attributes);
     }
     
     private static final Border RESIZE_BORDER = BorderFactory.createResizeBorder(8,Color.BLACK,true);
     private static final Border DEFAULT_BORDER = BorderFactory.createEmptyBorder(8);
-    private final static int FONT_SIZE=14;
+    private final static int HEADER_FONT_SIZE=14;
+    private final static int FONT_SIZE=13;
     private final static int ENTITY_TITLE_PADDING=10;
-    private final static int ENTITY_TITLE_SIZE=2*ENTITY_TITLE_PADDING+FONT_SIZE-4;
+    private final static int ENTITY_TITLE_SIZE=2*ENTITY_TITLE_PADDING+HEADER_FONT_SIZE-4;
     private final static int BORDER_ROUND=10;
     private final static Color ENTITY_SELECTED_BLUE=new Color(103, 145, 215);
     private final static Color ENTITY_BLUE=new Color(83, 117, 189);
@@ -48,16 +54,15 @@ public class EntityWidget extends Widget{
     private final Font CALIBRI;
     private final static Stroke BASIC_STROKE=new BasicStroke(1);
     private final static Stroke STROKE_2PX=new BasicStroke(2);
-
+    private final static String ENTITY_DEFAULT_NAME="Entity";
  
     
     @Override
     protected void paintWidget(){
         final Graphics2D g2 = getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-       
         final Rectangle bounds = getClientArea();
-        String s = title.length()>0 ? title : "Encja";
+        String s = bean.getDisplayName().length()>0 ? bean.getDisplayName() : ENTITY_DEFAULT_NAME;
         
         g2.setColor(ENTITY_BACKGROUND);
         g2.fillRoundRect(bounds.x, bounds.y, bounds.width-1, bounds.height-1,BORDER_ROUND,BORDER_ROUND);
@@ -81,8 +86,35 @@ public class EntityWidget extends Widget{
         g2.setStroke(BASIC_STROKE);
         double textWidth = g2.getFont().getStringBounds(s, g2.getFontRenderContext()).getWidth();
         double textPosition = (bounds.width)/2-textWidth/2;
-        g2.drawString(s, Math.round(textPosition)+bounds.x, bounds.y+FONT_SIZE+5);
-     
+        g2.drawString(s, Math.round(textPosition)+bounds.x, bounds.y+HEADER_FONT_SIZE+5);
+        
+        g2.setFont(CALIBRI);
+        g2.setColor(Color.BLACK); 
+        Image icon = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/columnIcon.png");
+        Image keyIcon = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/keyColumnIcon.png");
+        int i=bounds.y+ENTITY_TITLE_SIZE+5;
+        for(Node n :bean.getChildren().getNodes()){
+            if(!(n instanceof ColumnNode))
+                continue;
+            ColumnNode cn = (ColumnNode)n;
+            Column c = cn.getLookup().lookup(Column.class);
+            String display = c.getName();
+            if(c.isPrimary())
+                g2.drawImage(keyIcon, bounds.x+7, i, FONT_SIZE, FONT_SIZE, null);
+            else
+                g2.drawImage(icon, bounds.x+7, i, FONT_SIZE, FONT_SIZE, null);
+            i+=FONT_SIZE-2;
+            g2.drawString(display, bounds.x+12+FONT_SIZE, i);
+            
+            i+=7;
+        }
+        
+        
+    }
+    
+    public void recalculateMinSize(){
+        int y = ENTITY_TITLE_SIZE + (bean.getChildren().getNodes().length+1)*(FONT_SIZE+5)+5;
+        this.setMinimumSize(new Dimension(100, y));
     }
     
     public boolean isSelected(){
@@ -98,15 +130,10 @@ public class EntityWidget extends Widget{
                     (newState.isHovered() ? RESIZE_BORDER : DEFAULT_BORDER));
      }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public EntityNode getBean() {
         return bean;
+    }
+    private Entity getEntity(){
+        return bean.getLookup().lookup(Entity.class);
     }
 }
