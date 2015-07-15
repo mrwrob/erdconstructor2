@@ -65,6 +65,8 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         else
             return null;
         
+        bean.addNodeListener(new ColumnNodeListener((this)));
+        
         EntityWidget widget = new EntityWidget(this, bean);
         widget.setPreferredSize(new Dimension(200, 100));
         widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
@@ -74,7 +76,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         widget.getActions().addAction(ActionFactory.createResizeAction());
         widget.getActions().addAction(new MySelectWidgetAction());
        
-        widget.getActions().addAction( ActionFactory.createAlignWithMoveAction(mainLayer,interactionLayer,ActionFactory.createDefaultAlignWithMoveDecorator()));
+        widget.getActions().addAction(ActionFactory.createAlignWithMoveAction(mainLayer,interactionLayer,ActionFactory.createDefaultAlignWithMoveDecorator()));
         
         widget.recalculateMinSize();
         mainLayer.addChild(widget);

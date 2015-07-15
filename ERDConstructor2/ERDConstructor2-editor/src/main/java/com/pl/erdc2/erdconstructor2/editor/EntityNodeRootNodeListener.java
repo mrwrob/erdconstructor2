@@ -24,7 +24,6 @@ public class EntityNodeRootNodeListener implements NodeListener{
         for(Node n : ev.getDelta()){
             if(n instanceof EntityNode){
                 EntityNode en = (EntityNode)n;
-                en.addNodeListener(new ColumnNodeListener((gs)));
                 gs.addNode(n);
                 gs.validate();
             }
