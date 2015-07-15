@@ -42,17 +42,14 @@ public class EntityNodeRootNodeListener implements NodeListener{
 
     @Override
     public void childrenReordered(NodeReorderEvent ev) {
-        System.out.println("children reordered:");
     }
 
     @Override
     public void nodeDestroyed(NodeEvent ev) {
-        System.out.println("children destroyed:");
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("children property change:");
     }
     
 }

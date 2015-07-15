@@ -1,7 +1,6 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.Column;
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.util.Observable;
 import java.util.Observer;

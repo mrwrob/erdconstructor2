@@ -39,15 +39,20 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
     private final ExplorerManager em;
 
     public TreeViewerTopComponent() {
-        em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
+        em = EntityExplorerManagerProvider.getExplorerManager();
 
         initComponents();
         setName(Bundle.CTL_TreeViewerTopComponent());
         setToolTipText(Bundle.HINT_TreeViewerTopComponent());
         
         setLayout(new BorderLayout());
-        BeanTreeView entityViewer = new BeanTreeView();      
+        BeanTreeView entityViewer = new BeanTreeView();  
+        entityViewer.setRootVisible(false);
         add(entityViewer, BorderLayout.CENTER);
+        
+        
+        entityViewer.expandNode(EntityExplorerManagerProvider.getEntityNodeRoot());
+        entityViewer.expandNode(EntityExplorerManagerProvider.getRelatioshipNodeRoot());
         
         associateLookup(ExplorerUtils.createLookup(em, getActionMap()));
     }
