@@ -4,6 +4,7 @@ import java.util.Observable;
 
 
 public class Relationship extends Observable{
+    private int id;
     private String name;
     private String description;
     private Entity sourceEntity;
@@ -44,5 +45,14 @@ public class Relationship extends Observable{
         this.destinationEntity = destinationEntity;
         notifyObservers("destinationEntity");
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     
 }
