@@ -2,6 +2,7 @@ package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -23,11 +24,13 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
     private final LayerWidget connectionLayer;
     private final LayerWidget interactionLayer;
     private final Lookup.Result<EntityNode> entitesLookup;
+    private final Lookup.Result<RelationshipNode> relatioshipLookup;
     private final TopComponent associatedTopComponent;
 
     private boolean addRelationshipMode;
     
     public GraphSceneImpl(TopComponent tc) {
+        this.setLookFeel(new OurLookFeelImpl());
         associatedTopComponent = tc;
         this.random = new Random();
         mainLayer = new LayerWidget(this);
@@ -38,6 +41,8 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(EntityNode.class);
         entitesLookup.addLookupListener(this);
+        relatioshipLookup = Utilities.actionsGlobalContext().lookupResult(RelationshipNode.class);
+        relatioshipLookup.addLookupListener(this);
         
         getActions().addAction(new MyRelationshipAddModeAction());
         
@@ -115,7 +120,22 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
                     }
                 }
             }
+        }
+        if(relatioshipLookup.allItems().size()==1){
+            RelationshipNode node = relatioshipLookup.allInstances().iterator().next();
+            if(node==null)
+                return;
             
+            for(Widget w : connectionLayer.getChildren()){
+                if(w instanceof RelationshipWidget){
+                    RelationshipWidget rw = (RelationshipWidget)w;
+                    if(rw.getBean().equals(node)){
+                        rw.getScene().setFocusedWidget(rw);
+                        rw.repaint();
+                        rw.getScene().repaint();
+                    }
+                }
+            }
         }
     }
 

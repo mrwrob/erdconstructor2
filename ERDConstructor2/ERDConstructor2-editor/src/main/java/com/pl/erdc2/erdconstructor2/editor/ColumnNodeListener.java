@@ -1,16 +1,13 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.Column;
-import java.beans.PropertyChangeEvent;
 import java.util.Observable;
 import java.util.Observer;
 import org.netbeans.api.visual.widget.Widget;
-import org.openide.nodes.NodeEvent;
-import org.openide.nodes.NodeListener;
+import org.openide.nodes.NodeAdapter;
 import org.openide.nodes.NodeMemberEvent;
-import org.openide.nodes.NodeReorderEvent;
 
-public class ColumnNodeListener implements NodeListener, Observer{
+public class ColumnNodeListener extends NodeAdapter implements Observer{
     private final GraphSceneImpl gs;
 
     public ColumnNodeListener(GraphSceneImpl _gs) {
@@ -34,22 +31,6 @@ public class ColumnNodeListener implements NodeListener, Observer{
         if(c!=null)
             c.addObserver(this);
         gs.validate();
-    }
-
-    @Override
-    public void childrenRemoved(NodeMemberEvent ev) {
-    }
-
-    @Override
-    public void childrenReordered(NodeReorderEvent ev) {
-    }
-
-    @Override
-    public void nodeDestroyed(NodeEvent ev) {
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
     }
 
     @Override

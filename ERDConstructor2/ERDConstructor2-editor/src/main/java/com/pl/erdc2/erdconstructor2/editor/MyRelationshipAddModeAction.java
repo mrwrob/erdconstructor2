@@ -4,6 +4,7 @@ import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
+import java.awt.BasicStroke;
 import java.beans.IntrospectionException;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
@@ -68,16 +69,21 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
                 return WidgetAction.State.CONSUMED;
             }
             
-            ConnectionWidget conn = new ConnectionWidget (gs);
+            RelationshipWidget conn = new RelationshipWidget(gs,node);
             conn.setRouter(RouterFactory.createDirectRouter());
             conn.setSourceAnchor (AnchorFactory.createFreeRectangularAnchor (firstWidgetOfRelationship, true));
             conn.setTargetAnchor (AnchorFactory.createFreeRectangularAnchor (widget, true));
-
+            conn.setStroke(new BasicStroke(2));
+            conn.getActions().addAction(new MySelectWidgetAction());
+             
             LabelWidget label = new LabelWidget (gs, node.getDisplayName());
             label.setOpaque(true);
+            label.getActions().addAction(new MySelectWidgetAction());
             label.getActions().addAction(ActionFactory.createMoveAction());
             conn.addChild(label);
+            conn.setLabel(label);
             conn.setConstraint(label, LayoutFactory.ConnectionWidgetLayoutAlignment.CENTER_RIGHT, 0.5f);
+           
             
             gs.getConnectionLayer().addChild(conn);
 
