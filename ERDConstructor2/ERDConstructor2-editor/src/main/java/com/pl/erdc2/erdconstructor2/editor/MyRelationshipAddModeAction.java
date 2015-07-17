@@ -70,10 +70,11 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
             }
             
             RelationshipWidget conn = new RelationshipWidget(gs,node);
-            conn.setRouter(RouterFactory.createDirectRouter());
-            conn.setSourceAnchor (AnchorFactory.createFreeRectangularAnchor (firstWidgetOfRelationship, true));
-            conn.setTargetAnchor (AnchorFactory.createFreeRectangularAnchor (widget, true));
+            conn.setRouter(new MyRouter());
+            conn.setSourceAnchor (new MyAnchor(firstWidgetOfRelationship, false));
+            conn.setTargetAnchor (new MyAnchor(widget, false));
             conn.setStroke(new BasicStroke(2));
+            conn.updateControlPointPosition();
             conn.getActions().addAction(new MySelectWidgetAction());
              
             LabelWidget label = new LabelWidget (gs, node.getDisplayName());
