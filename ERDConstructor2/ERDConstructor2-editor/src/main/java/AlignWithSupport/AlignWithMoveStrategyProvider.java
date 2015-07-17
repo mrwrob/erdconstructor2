@@ -24,7 +24,8 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
     private boolean outerBounds;
     private Point originalLoc;
     private Point suggestedLoc;
-    
+    private boolean moved=false;
+    private static final int MOVE_POINTERS_AFTER_DISTANCE=250;
     public AlignWithMoveStrategyProvider (AlignWithWidgetCollector collector, LayerWidget interractionLayer, AlignWithMoveDecorator decorator, boolean outerBounds) {
         super (collector, interractionLayer, decorator);
         this.outerBounds = outerBounds;
@@ -32,6 +33,7 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
 
     @Override
     public Point locationSuggested (Widget widget, Point originalLocation, Point suggestedLocation) {
+        moved=true;
         originalLoc=originalLocation;
         suggestedLoc=suggestedLocation;
         Point widgetLocation = widget.getLocation ();
@@ -57,6 +59,7 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
     @Override
     public void movementStarted (Widget widget) {
         show ();
+        moved=false;
     }
 
     @Override
@@ -76,8 +79,8 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
     }
     
     private void reloadConnectionPointPositons(Widget widget){
-        if(Math.sqrt(Math.abs(originalLoc.x-suggestedLoc.x)*Math.abs(originalLoc.x-suggestedLoc.x) +
-                Math.abs(originalLoc.y-suggestedLoc.y)*Math.abs(originalLoc.y-suggestedLoc.y))<=150)
+        if(!moved || Math.sqrt(Math.abs(originalLoc.x-suggestedLoc.x)*Math.abs(originalLoc.x-suggestedLoc.x) +
+                Math.abs(originalLoc.y-suggestedLoc.y)*Math.abs(originalLoc.y-suggestedLoc.y))<=MOVE_POINTERS_AFTER_DISTANCE)
             return;
         if(widget instanceof EntityWidget){
             GraphSceneImpl gs = (GraphSceneImpl)widget.getScene();

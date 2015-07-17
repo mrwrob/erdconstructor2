@@ -121,5 +121,6 @@ public class RelationshipWidget extends ConnectionWidget{
         this.reroute();
         this.revalidate();
         this.getScene().validate();
+        this.getScene().repaint();
     }
 }
