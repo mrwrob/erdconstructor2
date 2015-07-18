@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.beans.IntrospectionException;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.Lookups;
@@ -12,18 +13,18 @@ import org.openide.util.lookup.Lookups;
     "# {0} - entity",
     "EntityDefaultName=Entity {0}"
 })
-public class EntityNode extends BeanNode<Entity> {
-    private static int ct=0;
-    
+public class EntityNode extends BeanNode<Entity> {    
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        bean.setName(Bundle.EntityDefaultName(++ct));
+        bean.setId(getNextIdValue());
+        bean.setName(Bundle.EntityDefaultName(+bean.getId()));
         setDisplayName(bean.getName());
     }
 
     public EntityNode(Entity bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        bean.setName(Bundle.EntityDefaultName(++ct));
+        bean.setId(getNextIdValue());
+        bean.setName(Bundle.EntityDefaultName(bean.getId()));
         setDisplayName(bean.getName());
     }
     
@@ -34,5 +35,16 @@ public class EntityNode extends BeanNode<Entity> {
     @Override
     public Image getOpenedIcon(int i) {
         return getIcon (i);
+    }
+    
+    private static int getNextIdValue(){
+        int max=0;
+        for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
+            int id=0;
+            if(n instanceof EntityNode)
+                id=((EntityNode)n).getLookup().lookup(Entity.class).getId();
+            max= id>max ? id : max;
+        }
+        return ++max;
     }
 }

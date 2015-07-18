@@ -4,6 +4,7 @@ import com.pl.erdc2.erdconstructor2.api.ColumnChildFactory;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -134,10 +135,11 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     // End of variables declaration//GEN-END:variables
 
     Lookup.Result<Entity> entitesLookup;
-
+    Lookup.Result<Relationship> relatioshipLookup;
+    
     @Override
     public void resultChanged(LookupEvent ev) {
-        if(!entitesLookup.allInstances().isEmpty()){
+        if(!entitesLookup.allInstances().isEmpty() || !relatioshipLookup.allInstances().isEmpty()){
             this.repaint();
         } 
     }
@@ -146,11 +148,13 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     public void componentOpened() {
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
         entitesLookup.addLookupListener(this);
+        relatioshipLookup = Utilities.actionsGlobalContext().lookupResult(Relationship.class);
+        relatioshipLookup.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        entitesLookup.removeLookupListener(this);
+        relatioshipLookup.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
