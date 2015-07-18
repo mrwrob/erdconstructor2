@@ -13,6 +13,7 @@ public class ConnectionPoint extends ImageWidget{
     private final RelationshipWidget relationshipWidget;
     private static final Image showImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/handler.png");
     private static final Image hideImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/transparent.png");
+    private boolean moved;
     
     public ConnectionPoint(Scene scene, RelationshipWidget relationshipWidget) {
         super(scene, showImage);
@@ -32,4 +33,13 @@ public class ConnectionPoint extends ImageWidget{
     public void hide(){
         this.setImage(hideImage);
     }
+
+    public boolean isMoved() {
+        return moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+    
 }

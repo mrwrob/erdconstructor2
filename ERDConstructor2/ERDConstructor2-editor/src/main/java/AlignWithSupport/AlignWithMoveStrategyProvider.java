@@ -21,11 +21,12 @@ import org.netbeans.api.visual.widget.Widget;
  * Class copied from org.netbeans.modules.visual.action.AlignWithMoveStrategyProvider
  */
 public class AlignWithMoveStrategyProvider extends AlignWithSupport implements MoveStrategy, MoveProvider {
-    private boolean outerBounds;
+    private final boolean outerBounds;
     private Point originalLoc;
     private Point suggestedLoc;
     private boolean moved=false;
-    private static final int MOVE_POINTERS_AFTER_DISTANCE=250;
+    private static final int MOVE_POINTERS_AFTER_DISTANCE=300;
+    
     public AlignWithMoveStrategyProvider (AlignWithWidgetCollector collector, LayerWidget interractionLayer, AlignWithMoveDecorator decorator, boolean outerBounds) {
         super (collector, interractionLayer, decorator);
         this.outerBounds = outerBounds;
@@ -79,9 +80,11 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
     }
     
     private void reloadConnectionPointPositons(Widget widget){
-        if(!moved || Math.sqrt(Math.abs(originalLoc.x-suggestedLoc.x)*Math.abs(originalLoc.x-suggestedLoc.x) +
-                Math.abs(originalLoc.y-suggestedLoc.y)*Math.abs(originalLoc.y-suggestedLoc.y))<=MOVE_POINTERS_AFTER_DISTANCE)
+        if(!moved)
             return;
+        boolean longDistanceMovement = (Math.sqrt(Math.abs(originalLoc.x-suggestedLoc.x)*Math.abs(originalLoc.x-suggestedLoc.x) +
+                Math.abs(originalLoc.y-suggestedLoc.y)*Math.abs(originalLoc.y-suggestedLoc.y))>MOVE_POINTERS_AFTER_DISTANCE);
+        
         if(widget instanceof EntityWidget){
             GraphSceneImpl gs = (GraphSceneImpl)widget.getScene();
             for(Widget w : gs.getConnectionLayer().getChildren()){
@@ -89,7 +92,8 @@ public class AlignWithMoveStrategyProvider extends AlignWithSupport implements M
                     continue;
                 RelationshipWidget rw = (RelationshipWidget)w;
                 if(rw.getSourceAnchor().getRelatedWidget()==widget || rw.getTargetAnchor().getRelatedWidget()==widget){
-                    rw.updateControlPointPosition();
+                    if(!rw.getPoint().isMoved() || longDistanceMovement)
+                        rw.updateControlPointPosition();
                 }
                 for(WidgetAction wa : w.getActions().getActions()){
                     wa.getClass();

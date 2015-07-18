@@ -41,6 +41,7 @@ public class RelationshipWidget extends ConnectionWidget{
                 RelationshipWidget rw = ((ConnectionPoint)widget).getRelationshipWidget();
                 rw.reroute();
                 rw.revalidate();
+                point.setMoved(true);
             }
             @Override
             public Point getOriginalLocation (Widget widget) {
@@ -116,7 +117,8 @@ public class RelationshipWidget extends ConnectionWidget{
         else
             p.x = a.x+a.width +  (b.x - (a.x+a.width))/2;
         
-        this.point.setPreferredLocation(p);
+        point.setMoved(false);
+        point.setPreferredLocation(p);
         point.revalidate();
         this.reroute();
         this.revalidate();
