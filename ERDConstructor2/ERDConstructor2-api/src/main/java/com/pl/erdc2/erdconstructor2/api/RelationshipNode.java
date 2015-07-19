@@ -10,27 +10,27 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.Lookups;
 
 @Messages({
-    "# {0} - entity",
-    "EntityDefaultName=Entity {0}"
+    "# {0} - relationship",
+    "RelationshipDefaultName=Relatioship {0}"
 })
-public class EntityNode extends BeanNode<Entity> {    
-    public EntityNode(Entity bean) throws IntrospectionException {
+public class RelationshipNode extends BeanNode<Relationship> {
+
+    
+    public RelationshipNode(Relationship bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
         bean.setId(getNextIdValue());
-        bean.setName(Bundle.EntityDefaultName(+bean.getId()));
+        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
         setDisplayName(bean.getName());
     }
-
-    public EntityNode(Entity bean, Children children) throws IntrospectionException {
+    public RelationshipNode(Relationship bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
         bean.setId(getNextIdValue());
-        bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
         setDisplayName(bean.getName());
     }
-    
     @Override
     public Image getIcon (int type) {    
-        return ImageUtilities.loadImage("images/entityIcon.png");
+        return ImageUtilities.loadImage("images/relationshipIcon.png");
     }
     @Override
     public Image getOpenedIcon(int i) {
@@ -39,12 +39,13 @@ public class EntityNode extends BeanNode<Entity> {
     
     private static int getNextIdValue(){
         int max=0;
-        for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
+        for(Node n : EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes()){
             int id=0;
-            if(n instanceof EntityNode)
-                id=((EntityNode)n).getLookup().lookup(Entity.class).getId();
+            if(n instanceof RelationshipNode)
+                id=((RelationshipNode)n).getLookup().lookup(Relationship.class).getId();
             max= id>max ? id : max;
         }
         return ++max;
     }
+    
 }

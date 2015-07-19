@@ -1,15 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pl.erdc2.erdconstructor2.api;
 
-/**
- *
- * @author Piotrek
- */
+
 public class Entity {
+    private int id;
     private String name;
     private String description;
 
@@ -28,4 +21,13 @@ public class Entity {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
 }

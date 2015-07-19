@@ -4,12 +4,14 @@ import com.pl.erdc2.erdconstructor2.api.ColumnChildFactory;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
 import javax.swing.ImageIcon;
+import javax.swing.JToggleButton;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -56,13 +58,15 @@ import org.openide.util.Utilities;
 public final class EditorTopComponent extends TopComponent implements LookupListener{
     private final ExplorerManager em;
     GraphSceneImpl scene;
+    JToggleButton addRelationshipMode;
+            
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_editorTopComponent());
         setToolTipText(Bundle.HINT_editorTopComponent());
         setLayout(new BorderLayout());
 
-        em = EntityExplorerManagerProvider.getInstance().getExplorerManager();
+        em = EntityExplorerManagerProvider.getExplorerManager();
         
         scene = new GraphSceneImpl(this);
         JScrollPane shapePane = new JScrollPane();
@@ -84,6 +88,22 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         });
         toolbar.add(addEntityButton);
         toolbar.addSeparator();
+        
+        Image addRelationshipImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/addRelationshipIcon.png");
+        addRelationshipMode = new JToggleButton("", new ImageIcon(addRelationshipImage));
+        addRelationshipMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    addRelationshipModeButtonActionPerformed(evt);
+                } catch (IntrospectionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        });
+        toolbar.add(addRelationshipMode);
+        toolbar.addSeparator();
+        
         
         add(shapePane, BorderLayout.CENTER);
         add(toolbar, BorderLayout.NORTH);
@@ -115,10 +135,11 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     // End of variables declaration//GEN-END:variables
 
     Lookup.Result<Entity> entitesLookup;
-
+    Lookup.Result<Relationship> relatioshipLookup;
+    
     @Override
     public void resultChanged(LookupEvent ev) {
-        if(!entitesLookup.allInstances().isEmpty()){
+        if(!entitesLookup.allInstances().isEmpty() || !relatioshipLookup.allInstances().isEmpty()){
             this.repaint();
         } 
     }
@@ -127,11 +148,13 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     public void componentOpened() {
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
         entitesLookup.addLookupListener(this);
+        relatioshipLookup = Utilities.actionsGlobalContext().lookupResult(Relationship.class);
+        relatioshipLookup.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        entitesLookup.removeLookupListener(this);
+        relatioshipLookup.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -150,7 +173,15 @@ public final class EditorTopComponent extends TopComponent implements LookupList
             Entity en = new Entity();
             EntityNode node = new EntityNode(en, Children.create(new ColumnChildFactory(), true));
             Node[] toAdd = {node};
-            em.getRootContext().getChildren().add(toAdd);
+            EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().add(toAdd);
+            
+            if(addRelationshipMode.isSelected()){
+                addRelationshipMode.setSelected(false);
+                scene.setAddRelationshipMode(false);
+            }
         }
+    } 
+    private void addRelationshipModeButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
+        scene.toggleAddRelationshipMode();
     } 
 }
