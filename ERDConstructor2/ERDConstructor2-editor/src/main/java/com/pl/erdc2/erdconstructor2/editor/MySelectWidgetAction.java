@@ -14,6 +14,8 @@ public class MySelectWidgetAction extends WidgetAction.Adapter {
     public WidgetAction.State mousePressed(Widget widget, WidgetAction.WidgetMouseEvent event) {
         if(widget instanceof LabelWidget)
                 widget = widget.getParentWidget();
+        if(widget instanceof ConnectionPoint)
+                widget = ((ConnectionPoint)widget).getRelationshipWidget();
         
         widget.getScene().setFocusedWidget(widget);
         widget.getScene().repaint();

@@ -1,5 +1,7 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
+import AlignWithSupport.AlignWithMoveStrategyProvider;
+import AlignWithSupport.SingleLayerAlignWithWidgetCollector;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
@@ -80,8 +82,8 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         widget.getActions().addAction(this.createWidgetHoverAction());
         widget.getActions().addAction(ActionFactory.createResizeAction());
         widget.getActions().addAction(new MySelectWidgetAction());
-       
-        widget.getActions().addAction(ActionFactory.createAlignWithMoveAction(mainLayer,interactionLayer,ActionFactory.createDefaultAlignWithMoveDecorator()));
+        AlignWithMoveStrategyProvider sp = new AlignWithMoveStrategyProvider (new SingleLayerAlignWithWidgetCollector (mainLayer, true), interactionLayer, ActionFactory.createDefaultAlignWithMoveDecorator(), true);
+        widget.getActions().addAction(ActionFactory.createMoveAction(sp, sp));
         
         widget.recalculateMinSize();
         mainLayer.addChild(widget);
@@ -167,5 +169,10 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
     public LayerWidget getConnectionLayer() {
         return connectionLayer;
     }
+
+    public LayerWidget getInteractionLayer() {
+        return interactionLayer;
+    }
+    
 }
 
