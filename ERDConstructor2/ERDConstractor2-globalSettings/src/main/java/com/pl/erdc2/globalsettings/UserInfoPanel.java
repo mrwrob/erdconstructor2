@@ -5,6 +5,11 @@
  */
 package com.pl.erdc2.globalsettings;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
+
 final class UserInfoPanel extends javax.swing.JPanel {
 
     private final UserInfoOptionsPanelController controller;
@@ -12,7 +17,28 @@ final class UserInfoPanel extends javax.swing.JPanel {
     UserInfoPanel(UserInfoOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
-        // TODO listen to changes in form fields and call controller.changed()
+        
+        Preferences pref = NbPreferences.forModule(UserInfoPanel.class); 
+        String name = pref.get("firstNamePreference", "");
+        String lastName = pref.get("lastNamePreference", ""); 
+        String indexNo = pref.get("indexNoPreference", ""); 
+         
+        pref.addPreferenceChangeListener(new PreferenceChangeListener() { 
+            @Override
+            public void preferenceChange(PreferenceChangeEvent evt) { 
+                if (evt.getKey().equals("firstNamePreference")) { 
+                    jTextField1.setText(evt.getNewValue()); 
+                }
+                if (evt.getKey().equals("lastNamePreference")) { 
+                    jTextField2.setText(evt.getNewValue()); 
+                }
+                if (evt.getKey().equals("indexNoPreference")) { 
+                    jTextField3.setText(evt.getNewValue()); 
+                }
+            } }); 
+        jTextField1.setText(name); 
+        jTextField2.setText(lastName); 
+        jTextField3.setText(indexNo);
     }
 
     /**
@@ -23,36 +49,84 @@ final class UserInfoPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jLabel1.text")); // NOI18N
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jLabel2.text")); // NOI18N
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jLabel3.text")); // NOI18N
+
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jTextField1.setText(org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jTextField1.text")); // NOI18N
+
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jTextField2.setText(org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jTextField2.text")); // NOI18N
+
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jTextField3.setText(org.openide.util.NbBundle.getMessage(UserInfoPanel.class, "UserInfoPanel.jTextField3.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 202, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(jLabel1)
+                            .addGap(47, 47, 47)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(21, 21, 21)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGap(106, 106, 106))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 68, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     void load() {
-        // TODO read settings and initialize GUI
-        // Example:        
-        // someCheckBox.setSelected(Preferences.userNodeForPackage(UserInfoPanel.class).getBoolean("someFlag", false));
-        // or for org.openide.util with API spec. version >= 7.4:
-        // someCheckBox.setSelected(NbPreferences.forModule(UserInfoPanel.class).getBoolean("someFlag", false));
-        // or:
-        // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
+        jTextField1.setText(NbPreferences.forModule(UserInfoPanel.class).get("firstNamePreference", ""));
+        jTextField2.setText(NbPreferences.forModule(UserInfoPanel.class).get("lastNamePreference", ""));
+        jTextField3.setText(NbPreferences.forModule(UserInfoPanel.class).get("indexNoPreference", ""));
     }
 
     void store() {
-        // TODO store modified settings
-        // Example:
-        // Preferences.userNodeForPackage(UserInfoPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-        // or for org.openide.util with API spec. version >= 7.4:
-        // NbPreferences.forModule(UserInfoPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-        // or:
-        // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
+        NbPreferences.forModule(UserInfoPanel.class).put("firstNamePreference", jTextField1.getText());
+        NbPreferences.forModule(UserInfoPanel.class).put("lastNamePreference", jTextField2.getText());
+        NbPreferences.forModule(UserInfoPanel.class).put("indexNoPreference", jTextField3.getText());
     }
 
     boolean valid() {
@@ -61,5 +135,11 @@ final class UserInfoPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
