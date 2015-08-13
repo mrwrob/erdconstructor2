@@ -60,6 +60,11 @@
             <artifactId>ERDConstructor2-columnEditor</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ERDConstractor2-globalSettings</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
