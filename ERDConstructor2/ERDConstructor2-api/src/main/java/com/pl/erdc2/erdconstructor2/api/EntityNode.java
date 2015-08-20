@@ -16,15 +16,19 @@ import org.openide.util.lookup.Lookups;
 public class EntityNode extends BeanNode<Entity> {    
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.EntityDefaultName(+bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        }
         setDisplayName(bean.getName());
     }
 
     public EntityNode(Entity bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        }
         setDisplayName(bean.getName());
     }
     

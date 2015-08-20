@@ -1,14 +1,21 @@
 package com.pl.erdc2.erdconstructor2.api;
 
+import java.awt.Point;
+import java.io.Serializable;
 import java.util.Observable;
 
 
-public class Relationship extends Observable{
+public class Relationship extends Observable implements Serializable{
     private int id;
     private String name;
     private String description;
-    private Entity sourceEntity;
-    private Entity destinationEntity;
+    private int sourceEntityId;
+    private int destinationEntityId;
+    
+    //save properties
+    private Point controlPointLocation;
+    private Point nameLabelLocation;
+    private boolean controlPointMoved;
     
     public String getName() {
         return name;
@@ -28,22 +35,20 @@ public class Relationship extends Observable{
         notifyObservers("description");
     }
 
-    public Entity getSourceEntity() {
-        return sourceEntity;
+    public int getSourceEntityId() {
+        return sourceEntityId;
     }
 
-    public void setSourceEntity(Entity sourceEntity) {
-        this.sourceEntity = sourceEntity;
-        notifyObservers("sourceEntity");
+    public void setSourceEntityId(int sourceEntityId) {
+        this.sourceEntityId = sourceEntityId;
     }
 
-    public Entity getDestinationEntity() {
-        return destinationEntity;
+    public int getDestinationEntityId() {
+        return destinationEntityId;
     }
 
-    public void setDestinationEntity(Entity destinationEntity) {
-        this.destinationEntity = destinationEntity;
-        notifyObservers("destinationEntity");
+    public void setDestinationEntityId(int destinationEntityId) {
+        this.destinationEntityId = destinationEntityId;
     }
 
     public int getId() {
@@ -52,6 +57,30 @@ public class Relationship extends Observable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Point getControlPointLocation() {
+        return controlPointLocation;
+    }
+
+    public void setControlPointLocation(Point controlPointLocation) {
+        this.controlPointLocation = controlPointLocation;
+    }
+
+    public Point getNameLabelLocation() {
+        return nameLabelLocation;
+    }
+
+    public void setNameLabelLocation(Point nameLabelLocation) {
+        this.nameLabelLocation = nameLabelLocation;
+    }
+
+    public boolean isControlPointMoved() {
+        return controlPointMoved;
+    }
+
+    public void setControlPointMoved(boolean controlPointMoved) {
+        this.controlPointMoved = controlPointMoved;
     }
     
     
