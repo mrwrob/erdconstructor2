@@ -6,7 +6,7 @@
         <artifactId>ERDConstructor2-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ERDConstractor2-globalSettings</artifactId>
+    <artifactId>ERDConstructor2-globalSettings</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -54,5 +54,5 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <name>ERDConstractor2-globalSettings</name>
+    <name>ERDConstructor2-globalSettings</name>
 </project>

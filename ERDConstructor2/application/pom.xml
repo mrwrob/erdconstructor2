@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ERDConstractor2-globalSettings</artifactId>
+            <artifactId>ERDConstructor2-globalSettings</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

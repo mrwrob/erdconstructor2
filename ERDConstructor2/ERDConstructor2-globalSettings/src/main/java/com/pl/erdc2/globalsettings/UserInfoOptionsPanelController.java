@@ -14,10 +14,10 @@ import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
 @OptionsPanelController.SubRegistration(
-        location = "ERDConstractor2Settings",
+        location = "ERDConstructor2Settings",
         displayName = "#AdvancedOption_DisplayName_UserInfo",
         keywords = "#AdvancedOption_Keywords_UserInfo",
-        keywordsCategory = "ERDConstractor2Settings/UserInfo"
+        keywordsCategory = "ERDConstructor2Settings/UserInfo"
 )
 @org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_UserInfo=User Info", "AdvancedOption_Keywords_UserInfo=user info"})
 public final class UserInfoOptionsPanelController extends OptionsPanelController {

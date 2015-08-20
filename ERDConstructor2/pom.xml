@@ -62,7 +62,7 @@
         <module>ERDConstructor2-treeView</module>
         <module>ERDConstructor2-editor</module>
         <module>ERDConstructor2-columnEditor</module>
-        <module>ERDConstractor2-globalSettings</module>
+        <module>ERDConstructor2-globalSettings</module>
     </modules>
 
     <properties>
