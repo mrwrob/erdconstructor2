@@ -2,12 +2,17 @@ package com.pl.erdc2.erdconstructor2.editor;
 
 import AlignWithSupport.AlignWithMoveStrategyProvider;
 import AlignWithSupport.SingleLayerAlignWithWidgetCollector;
+import com.pl.erdc2.erdconstructor2.api.Column;
+import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
+import java.awt.BasicStroke;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.Random;
 import org.netbeans.api.visual.graph.GraphScene;
 import org.netbeans.api.visual.widget.Widget;
@@ -18,20 +23,22 @@ import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.layout.LayoutFactory;
+import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 
-public class GraphSceneImpl extends GraphScene implements LookupListener{
+public class GraphSceneImpl extends GraphScene implements LookupListener, Serializable{
     private final LayerWidget mainLayer;
     private final Random random;
     private final LayerWidget connectionLayer;
     private final LayerWidget interactionLayer;
     private final Lookup.Result<EntityNode> entitesLookup;
     private final Lookup.Result<RelationshipNode> relatioshipLookup;
-    private final TopComponent associatedTopComponent;
+    private final EditorTopComponent associatedTopComponent;
 
     private boolean addRelationshipMode;
     
-    public GraphSceneImpl(TopComponent tc) {
+    public GraphSceneImpl(EditorTopComponent tc) {
         this.setLookFeel(new OurLookFeelImpl());
         associatedTopComponent = tc;
         this.random = new Random();
@@ -40,6 +47,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         interactionLayer = new LayerWidget(this);
         
         EntityExplorerManagerProvider.getEntityNodeRoot().addNodeListener(new EntityNodeRootNodeListener(this));
+        EntityExplorerManagerProvider.getRelatioshipNodeRoot().addNodeListener(new RelationshipNodeRootNodeListener(this));
         
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(EntityNode.class);
         entitesLookup.addLookupListener(this);
@@ -63,20 +71,104 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         }
     }
     
+    public void prepareToSerialize(){
+        for(Widget w : mainLayer.getChildren()){
+            if(w instanceof EntityWidget){
+                EntityWidget ew = (EntityWidget)w;
+                EntityNode en = ew.getBean();
+                Entity e = en.getLookup().lookup(Entity.class);
+                if(e!=null){
+                    e.setBounds(ew.getPreferredBounds());
+                    e.setLocation(ew.getPreferredLocation());
+                    e.getColumns().clear();
+                    for(Node n :en.getChildren().getNodes()){
+                        e.getColumns().add(n.getLookup().lookup(Column.class));
+                    }
+                }
+            }
+        }
+        for(Widget w : connectionLayer.getChildren()){
+            if(w instanceof RelationshipWidget){
+                RelationshipWidget rw = (RelationshipWidget)w;
+                RelationshipNode rn = rw.getBean();
+                Relationship r = rn.getLookup().lookup(Relationship.class);
+                if(r!=null){
+                    r.setControlPointLocation(rw.getPoint().getPreferredLocation());
+                    r.setNameLabelLocation(rw.getLabel().getPreferredLocation());
+                    r.setControlPointMoved(rw.getPoint().isMoved());
+                }
+            }
+        }
+    }
+    
+    public void clean(){
+        mainLayer.removeChildren();
+        connectionLayer.removeChildren();
+        interactionLayer.removeChildren();
+    }
+    
     @Override
     protected Widget attachNodeWidget(Object n) {
-        EntityNode bean;
-        if(n instanceof EntityNode){
-            bean = (EntityNode)n;
+        if(n instanceof EntityNode)
+            return attachEntityNodeWidget((EntityNode)n);
+        else if(n instanceof RelationshipNode)
+            return attachRelationshipNodeWidget((RelationshipNode)n);
+        return null;
+    }
+    
+    private RelationshipWidget attachRelationshipNodeWidget(RelationshipNode node){
+        RelationshipWidget conn = new RelationshipWidget(this,node);
+        Relationship bean = node.getLookup().lookup(Relationship.class);
+        
+        conn.setRouter(new MyRouter());
+        conn.setSourceAnchor(new MyAnchor(getEntityWidgetById(bean.getSourceEntityId()), false));
+        conn.setTargetAnchor(new MyAnchor(getEntityWidgetById(bean.getDestinationEntityId()), false));
+        conn.setStroke(new BasicStroke(2));
+        if(bean.getControlPointLocation()!=null){
+            conn.getPoint().setMoved(bean.isControlPointMoved());
+            conn.getPoint().setPreferredLocation(bean.getControlPointLocation());
+            conn.getPoint().revalidate();
         }
         else
-            return null;
+            conn.updateControlPointPosition();
+        conn.getActions().addAction(new MySelectWidgetAction());
+
+        LabelWidget label = new LabelWidget (this, node.getDisplayName());
+        label.setOpaque(true);
+        label.getActions().addAction(new MySelectWidgetAction());
+        label.getActions().addAction(ActionFactory.createMoveAction());
+        conn.addChild(label);
+        conn.setLabel(label);
+        conn.setConstraint(label, LayoutFactory.ConnectionWidgetLayoutAlignment.CENTER_RIGHT, 0.5f);
+        if(bean.getNameLabelLocation()!=null)
+            label.setPreferredLocation(bean.getNameLabelLocation());
         
-        bean.addNodeListener(new ColumnNodeListener((this)));
+        connectionLayer.addChild(conn);
+        conn.getPoint().revalidate();
+        conn.reroute();
+        conn.revalidate();
+        this.validate();
+        this.repaint();
+        return conn;
+     }
+    
+    private EntityWidget attachEntityNodeWidget(EntityNode node){
+        Entity entity;
         
-        EntityWidget widget = new EntityWidget(this, bean);
-        widget.setPreferredSize(new Dimension(200, 100));
-        widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
+        entity = node.getLookup().lookup(Entity.class);
+        
+        node.addNodeListener(new ColumnNodeListener((this)));
+            
+        EntityWidget widget = new EntityWidget(this, node);
+        if(entity.getBounds()!=null)
+            widget.setPreferredBounds(entity.getBounds());
+        else
+            widget.setPreferredSize(new Dimension(200, 100));
+        
+        if(entity.getLocation()!=null)
+            widget.setPreferredLocation(entity.getLocation());
+        else
+            widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
         
         widget.getActions().addAction(new MyRelationshipAddModeAction());
         widget.getActions().addAction(this.createWidgetHoverAction());
@@ -87,9 +179,22 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         
         widget.recalculateMinSize();
         mainLayer.addChild(widget);
+        
         return widget;
     }
     
+    private EntityWidget getEntityWidgetById(int id){
+        for(Widget w : mainLayer.getChildren()){
+            if(w instanceof EntityWidget){
+                EntityWidget ew = (EntityWidget)w;
+                EntityNode en = ew.getBean();
+                Entity e = en.getLookup().lookup(Entity.class);
+                if(e.getId()==id)
+                    return ew;
+            }
+        }
+        return null;
+    }
     
     @Override
     protected Widget attachEdgeWidget(Object e) {
@@ -173,6 +278,5 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
     public LayerWidget getInteractionLayer() {
         return interactionLayer;
     }
-    
 }
 

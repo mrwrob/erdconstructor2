@@ -18,14 +18,18 @@ public class RelationshipNode extends BeanNode<Relationship> {
     
     public RelationshipNode(Relationship bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        }
         setDisplayName(bean.getName());
     }
     public RelationshipNode(Relationship bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        }
         setDisplayName(bean.getName());
     }
     @Override

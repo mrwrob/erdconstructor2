@@ -12,8 +12,10 @@ import org.openide.util.lookup.Lookups;
 public class ColumnNode  extends BeanNode<Column>  implements Observer{
     public ColumnNode(Column bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        bean.setName("Attribute");
-        bean.setDescription("");
+        if(bean.getName()==null){
+            bean.setName("Attribute");
+            bean.setDescription("");
+        }
         bean.addObserver(this);
         this.setDisplayName(bean.getName());
         
