@@ -15,6 +15,7 @@ import org.openide.util.lookup.Lookups;
 })
 public class RelationshipNode extends BeanNode<Relationship> {
 
+    private Relationship bean;
     
     public RelationshipNode(Relationship bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
@@ -23,6 +24,7 @@ public class RelationshipNode extends BeanNode<Relationship> {
             bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
         }
         setDisplayName(bean.getName());
+        this.bean = bean;
     }
     public RelationshipNode(Relationship bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
@@ -50,6 +52,11 @@ public class RelationshipNode extends BeanNode<Relationship> {
             max= id>max ? id : max;
         }
         return ++max;
+    }
+        
+    @Override
+    public Relationship getBean(){
+        return this.bean;              
     }
     
 }
