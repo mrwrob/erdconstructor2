@@ -1,7 +1,10 @@
 package com.pl.erdc2.erdconstructor2.api;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -13,7 +16,7 @@ import org.openide.util.lookup.Lookups;
     "# {0} - entity",
     "EntityDefaultName=Entity {0}"
 })
-public class EntityNode extends BeanNode<Entity> {    
+public class EntityNode extends BeanNode<Entity> {      
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
         if(bean.getId()==0){
@@ -40,7 +43,29 @@ public class EntityNode extends BeanNode<Entity> {
     public Image getOpenedIcon(int i) {
         return getIcon (i);
     }
-    
+
+    @Override
+    public Action[] getActions(boolean popup) {
+        return new Action[]{new DeleteAction(this)};
+    }
+
+    private class DeleteAction extends AbstractAction {
+
+        EntityNode entityNode;
+        
+        public DeleteAction(EntityNode entityNode) {
+            this.entityNode = entityNode;
+            putValue(NAME, "Delete Entity");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {                
+            Node root = EntityExplorerManagerProvider.getEntityNodeRoot();
+            Node[] toDelete = {entityNode};
+            root.getChildren().remove(toDelete);
+        }
+    }
+            
     private static int getNextIdValue(){
         int max=0;
         for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
