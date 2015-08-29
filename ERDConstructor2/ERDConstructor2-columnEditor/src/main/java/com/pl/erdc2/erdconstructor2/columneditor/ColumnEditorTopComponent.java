@@ -118,6 +118,8 @@ public final class ColumnEditorTopComponent extends TopComponent  implements Loo
             this.remove(relationshipPanel);
         }
         else if(n instanceof RelationshipNode){
+            relationshipPanel.selectedNode = (RelationshipNode) n;
+            relationshipPanel.updatePanel();
             this.add(relationshipPanel, BorderLayout.CENTER);
             this.remove(entityPanel);
         }

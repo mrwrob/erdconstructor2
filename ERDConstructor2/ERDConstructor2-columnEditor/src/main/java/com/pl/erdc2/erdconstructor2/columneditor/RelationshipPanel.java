@@ -1,16 +1,23 @@
 package com.pl.erdc2.erdconstructor2.columneditor;
 
+import com.pl.erdc2.erdconstructor2.api.Entity;
+import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.openide.nodes.Node;
 
 /**
  *
@@ -24,12 +31,17 @@ public class RelationshipPanel extends JPanel{
     JLabel typeLabel;
     JTextField nameField;
     JTextArea descriptionField;
-    JComboBox<String> entity1;
-    JComboBox<String> entity2;
+    JComboBox<Entity> entity1;
+    JComboBox<Entity> entity2;
     JComboBox<String> type1;
     JComboBox<String> type2;
     RelationshipNode selectedNode = null;
 
+    Entity1Listener entity1Listener;
+    Entity2Listener entity2Listener;
+    Type1Listener type1Listener;
+    Type2Listener type2Listener;
+    
     public RelationshipPanel() {
         setName(Bundle.CTL_ColumnEditorTopComponent());
         setToolTipText(Bundle.HINT_ColumnEditorTopComponent());
@@ -48,13 +60,46 @@ public class RelationshipPanel extends JPanel{
         typeLabel.setFont(new Font("Calibri", Font.BOLD, 17));
         
         nameField = new JTextField();
-        nameField.setPreferredSize(new Dimension(200,20));
+        nameField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeName();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeName();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e){
+                changeName();
+            }
+        });
+        
         descriptionField = new JTextArea();
-        descriptionField.setPreferredSize(new Dimension(200,60));
+        descriptionField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeDesc();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeDesc();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e){
+                changeDesc();
+            }
+        });
+        
         entity1 = new JComboBox<>();
+        entity1Listener = new Entity1Listener();
         entity2 = new JComboBox<>();
-        type1 = new JComboBox<>();
-        type2 = new JComboBox<>();
+        entity2Listener = new Entity2Listener();
+        
+        type1 = new JComboBox<>(Relationship.TYPES);
+        type2 = new JComboBox<>(Relationship.TYPES);
+        type1Listener = new Type1Listener();
+        type2Listener = new Type2Listener();
         
         JLabel empty = new JLabel("");
         
@@ -78,8 +123,10 @@ public class RelationshipPanel extends JPanel{
         gbc.gridy = 2;
         add(descriptionLabel, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 3;        
+        gbc.gridy = 3;  
+        gbc.fill = GridBagConstraints.BOTH;
         add(descriptionField, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth=1;
@@ -107,5 +154,91 @@ public class RelationshipPanel extends JPanel{
         gbc.fill = GridBagConstraints.BOTH;
         add(empty, gbc);
         
+    }
+    
+    private void changeName(){
+        if(selectedNode==null)
+            return;
+        Relationship rel = selectedNode.getLookup().lookup(Relationship.class);
+        if(rel==null)
+            return;
+        rel.setName(nameField.getText());
+    }
+    
+    private void changeDesc(){
+        if(selectedNode==null)
+            return;
+        Relationship rel = selectedNode.getLookup().lookup(Relationship.class);
+        if(rel==null)
+            return;
+        rel.setDescription(descriptionField.getText());
+    }
+    
+    public void updatePanel(){
+        if(selectedNode==null)
+            return;
+        Relationship rel = selectedNode.getRelationship();
+        if(rel==null)
+            return;
+        
+        nameField.setText(rel.getName());
+        descriptionField.setText(rel.getDescription());
+                
+        Node[] nodes = EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes();
+        entity2.removeAllItems();
+        entity1.removeAllItems();
+        entity1.removeItemListener(entity1Listener);
+        entity2.removeItemListener(entity2Listener);
+        type1.removeItemListener(type1Listener);
+        type2.removeItemListener(type2Listener);
+        for(Node n:nodes){
+            Entity e = n.getLookup().lookup(Entity.class); 
+            if(e==null)
+                continue;
+            entity2.addItem(e);
+            entity1.addItem(e);
+            
+            if(e.getId()==rel.getSourceEntityId())
+                entity1.setSelectedItem(e);
+            
+            if(e.getId()==rel.getDestinationEntityId())
+                entity2.setSelectedItem(e);
+        }
+        type1.setSelectedItem(rel.getSourceType());
+        type2.setSelectedItem(rel.getDestinationType());
+        
+        entity1.addItemListener(entity1Listener);
+        entity2.addItemListener(entity2Listener);
+        type1.addItemListener(type1Listener);
+        type2.addItemListener(type2Listener);
+    }
+    
+    private class Entity1Listener implements ItemListener{
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(entity1.getSelectedItem()!=null && selectedNode!=null && selectedNode.getRelationship()!=null)
+                selectedNode.getRelationship().setSourceEntityId(((Entity)entity1.getSelectedItem()).getId());
+        }
+    }
+    private class Entity2Listener implements ItemListener{
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(entity2.getSelectedItem()!=null && selectedNode!=null && selectedNode.getRelationship()!=null)
+                selectedNode.getRelationship().setDestinationEntityId(((Entity)entity2.getSelectedItem()).getId());
+        }
+    }
+    private class Type1Listener implements ItemListener{
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(entity1.getSelectedItem()!=null && selectedNode!=null && selectedNode.getRelationship()!=null)
+                selectedNode.getRelationship().setSourceType((String)type1.getSelectedItem());
+        }
+    }
+    private class Type2Listener implements ItemListener{
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(type2.getSelectedItem()!=null && selectedNode!=null && selectedNode.getRelationship()!=null)
+                selectedNode.getRelationship().setDestinationType((String)type2.getSelectedItem());
+        }
     }
 }

@@ -132,16 +132,6 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         else
             conn.updateControlPointPosition();
         conn.getActions().addAction(new MySelectWidgetAction());
-
-        LabelWidget label = new LabelWidget (this, node.getDisplayName());
-        label.setOpaque(true);
-        label.getActions().addAction(new MySelectWidgetAction());
-        label.getActions().addAction(ActionFactory.createMoveAction());
-        conn.addChild(label);
-        conn.setLabel(label);
-        conn.setConstraint(label, LayoutFactory.ConnectionWidgetLayoutAlignment.CENTER_RIGHT, 0.5f);
-        if(bean.getNameLabelLocation()!=null)
-            label.setPreferredLocation(bean.getNameLabelLocation());
         
         connectionLayer.addChild(conn);
         conn.getPoint().revalidate();
@@ -183,7 +173,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         return widget;
     }
     
-    private EntityWidget getEntityWidgetById(int id){
+    public EntityWidget getEntityWidgetById(int id){
         for(Widget w : mainLayer.getChildren()){
             if(w instanceof EntityWidget){
                 EntityWidget ew = (EntityWidget)w;

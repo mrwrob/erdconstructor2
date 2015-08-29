@@ -1,25 +1,33 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.Scene;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Observable;
+import java.util.Observer;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.MoveProvider;
 import org.netbeans.api.visual.action.MoveStrategy;
+import org.netbeans.api.visual.layout.LayoutFactory;
 import org.netbeans.api.visual.model.ObjectState;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Widget;
 
-public class RelationshipWidget extends ConnectionWidget{
+public class RelationshipWidget extends ConnectionWidget implements Observer{
     private final RelationshipNode bean;
     private LabelWidget label;
     private final ConnectionPoint point;
     
-    public RelationshipWidget(Scene scene, RelationshipNode bean) {
+    public RelationshipWidget(Scene scene, RelationshipNode node) {
         super(scene);
-        this.bean = bean;
+        this.bean = node;
+        Relationship bean = node.getLookup().lookup(Relationship.class);
+        bean.addObserver(this);
+        
+        
         point = new ConnectionPoint (this.getScene(),this);
         point.getActions().addAction(new MySelectWidgetAction());
         ((GraphSceneImpl)this.getScene()).getInteractionLayer().addChild(point);
@@ -52,6 +60,16 @@ public class RelationshipWidget extends ConnectionWidget{
                 widget.setPreferredLocation (location);
             }
         }));
+        
+        LabelWidget label = new LabelWidget (getScene(), node.getDisplayName());
+        label.setOpaque(true);
+        label.getActions().addAction(new MySelectWidgetAction());
+        label.getActions().addAction(ActionFactory.createMoveAction());
+        this.addChild(label);
+        this.setLabel(label);
+        this.setConstraint(label, LayoutFactory.ConnectionWidgetLayoutAlignment.CENTER_RIGHT, 0.5f);
+        if(bean.getNameLabelLocation()!=null)
+            label.setPreferredLocation(bean.getNameLabelLocation());
     }
 
     @Override
@@ -124,5 +142,30 @@ public class RelationshipWidget extends ConnectionWidget{
         this.revalidate();
         this.getScene().validate();
         this.getScene().repaint();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        String argg = (String)arg;
+        if(argg.equals("name"))
+            this.getLabel().setLabel(bean.getLookup().lookup(Relationship.class).getName());
+        else if(argg.equals("sourceEntityId")){
+            this.setSourceAnchor(new MyAnchor(((GraphSceneImpl)this.getScene()).getEntityWidgetById(bean.getRelationship().getSourceEntityId()), false));
+            updateControlPointPosition();
+            this.reroute();
+            this.revalidate();
+        }
+        else if(argg.equals("destinationEntityId")){
+            this.setTargetAnchor(new MyAnchor(((GraphSceneImpl)this.getScene()).getEntityWidgetById(bean.getRelationship().getDestinationEntityId()), false));
+            updateControlPointPosition();
+            this.reroute();
+            this.revalidate();
+        }
+        this.repaint();
+        this.revalidate();
+        this.getScene().validate();
+        this.getScene().repaint();
+        ((GraphSceneImpl)this.getScene()).getAssociatedTopComponent().repaint();
+        
     }
 }

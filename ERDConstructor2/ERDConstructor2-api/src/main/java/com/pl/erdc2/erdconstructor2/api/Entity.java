@@ -67,4 +67,9 @@ public class Entity implements Serializable{
         this.columns = columns;
     }
     
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }

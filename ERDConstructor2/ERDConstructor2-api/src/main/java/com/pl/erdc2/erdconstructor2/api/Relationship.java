@@ -10,12 +10,23 @@ public class Relationship extends Observable implements Serializable{
     private String name;
     private String description;
     private int sourceEntityId;
+    private String sourceType;
     private int destinationEntityId;
+    private String destinationType;
     
     //save properties
     private Point controlPointLocation;
     private Point nameLabelLocation;
     private boolean controlPointMoved;
+    
+    public static final String[] TYPES = {"0..1", "1", "0..n", "1..n"};
+
+    public Relationship() {
+        this.destinationType="0..1";
+        this.sourceType="0..1";
+    }
+    
+    
     
     public String getName() {
         return name;
@@ -23,6 +34,7 @@ public class Relationship extends Observable implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+        setChanged();
         notifyObservers("name");
     }
 
@@ -32,7 +44,6 @@ public class Relationship extends Observable implements Serializable{
 
     public void setDescription(String description) {
         this.description = description;
-        notifyObservers("description");
     }
 
     public int getSourceEntityId() {
@@ -40,7 +51,11 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setSourceEntityId(int sourceEntityId) {
-        this.sourceEntityId = sourceEntityId;
+        if(this.sourceEntityId!=sourceEntityId){
+            this.sourceEntityId = sourceEntityId;
+            setChanged();
+            notifyObservers("sourceEntityId");
+        }
     }
 
     public int getDestinationEntityId() {
@@ -48,7 +63,11 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setDestinationEntityId(int destinationEntityId) {
-        this.destinationEntityId = destinationEntityId;
+        if(this.destinationEntityId!=destinationEntityId){
+            this.destinationEntityId = destinationEntityId;
+            setChanged();
+            notifyObservers("destinationEntityId");
+        }
     }
 
     public int getId() {
@@ -81,6 +100,27 @@ public class Relationship extends Observable implements Serializable{
 
     public void setControlPointMoved(boolean controlPointMoved) {
         this.controlPointMoved = controlPointMoved;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public String getDestinationType() {
+        return destinationType;
+    }
+
+    public void setDestinationType(String destinationType) {
+        this.destinationType = destinationType;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
     
     
