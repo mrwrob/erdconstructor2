@@ -1,7 +1,11 @@
 package com.pl.erdc2.erdconstructor2.api;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import static javax.swing.Action.NAME;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -48,4 +52,42 @@ public class RelationshipNode extends BeanNode<Relationship> {
         return ++max;
     }
     
+    @Override
+    public Action[] getActions(boolean popup)
+    {
+        return new Action[] {new ContextMenuItem()};
+    }
+    private class ContextMenuItem extends AbstractAction
+    {
+        public ContextMenuItem()
+        {
+            putValue (NAME, "Delete");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Relationship rel = getLookup().lookup(Relationship.class);
+            switch(e.getActionCommand())
+            {
+                case "Delete": 
+                   
+                    Node nodes[] = EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes();
+                    for(Node n:nodes)
+                    {
+                        String s=n.getDisplayName();
+                        s=s.replace("Relatioship ", "");
+                        if(rel.getId()==Integer.valueOf(s))
+                        {
+                            Node nodesToRemove[]={n};
+                            EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(nodesToRemove);
+                            break;
+                        }
+                    }
+                break;
+            }
+        }
+
+
+        
+    }
 }

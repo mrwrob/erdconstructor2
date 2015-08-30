@@ -36,10 +36,11 @@ public class GraphSceneImpl extends GraphScene implements LookupListener{
         associatedTopComponent = tc;
         this.random = new Random();
         mainLayer = new LayerWidget(this);
-        connectionLayer = new LayerWidget(this);
+         connectionLayer = new LayerWidget(this);
         interactionLayer = new LayerWidget(this);
         
         EntityExplorerManagerProvider.getEntityNodeRoot().addNodeListener(new EntityNodeRootNodeListener(this));
+        EntityExplorerManagerProvider.getRelatioshipNodeRoot().addNodeListener(new RelationshipNodeRootNodeListener(this));
         
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(EntityNode.class);
         entitesLookup.addLookupListener(this);
