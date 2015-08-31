@@ -22,8 +22,8 @@ public class Relationship extends Observable implements Serializable{
     public static final String[] TYPES = {"0..1", "1", "0..n", "1..n"};
 
     public Relationship() {
-        this.destinationType="0..1";
-        this.sourceType="0..1";
+        this.destinationType=TYPES[1];
+        this.sourceType=TYPES[1];
     }
     
     
@@ -107,7 +107,11 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
+        if(!this.sourceType.equals(sourceType)){
+           this.sourceType = sourceType;
+            setChanged();
+            notifyObservers("sourceType");
+        }
     }
 
     public String getDestinationType() {
@@ -115,7 +119,11 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setDestinationType(String destinationType) {
-        this.destinationType = destinationType;
+        if(!this.destinationType.equals(destinationType)){
+            this.destinationType = destinationType;
+            setChanged();
+            notifyObservers("destinationType");
+        }
     }
     
     @Override
