@@ -2,6 +2,8 @@ package com.pl.erdc2.erdconstructor2.api;
 
 import java.awt.Image;
 import java.beans.IntrospectionException;
+import java.util.Observable;
+import java.util.Observer;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -13,7 +15,9 @@ import org.openide.util.lookup.Lookups;
     "# {0} - relationship",
     "RelationshipDefaultName=Relatioship {0}"
 })
-public class RelationshipNode extends BeanNode<Relationship> {
+
+public class RelationshipNode extends BeanNode<Relationship> implements Observer{
+    
 
     private Relationship bean;
     
@@ -23,6 +27,7 @@ public class RelationshipNode extends BeanNode<Relationship> {
             bean.setId(getNextIdValue());
             bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
         }
+        bean.addObserver(this);
         setDisplayName(bean.getName());
         this.bean = bean;
     }
@@ -32,8 +37,10 @@ public class RelationshipNode extends BeanNode<Relationship> {
             bean.setId(getNextIdValue());
             bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
         }
+        bean.addObserver(this);
         setDisplayName(bean.getName());
     }
+    
     @Override
     public Image getIcon (int type) {    
         return ImageUtilities.loadImage("images/relationshipIcon.png");
@@ -59,4 +66,22 @@ public class RelationshipNode extends BeanNode<Relationship> {
         return this.bean;              
     }
     
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o instanceof Relationship){
+            Relationship rel = (Relationship)o;
+            String property = (String)arg;
+            if(property.equals("name")){ 
+                String old = this.getDisplayName();
+                this.setDisplayName(rel.getName());
+                this.fireDisplayNameChange(old, rel.getName());
+            }
+        }
+    }
+    
+    public Relationship getRelationship(){
+        if(this.getLookup()!=null)
+            return this.getLookup().lookup(Relationship.class);
+        return null;
+    }
 }

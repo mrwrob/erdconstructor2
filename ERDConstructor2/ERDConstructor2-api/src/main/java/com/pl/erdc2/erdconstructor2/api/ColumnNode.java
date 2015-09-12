@@ -9,7 +9,7 @@ import org.openide.nodes.Children;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
-public class ColumnNode  extends BeanNode<Column>  implements Observer{
+public class ColumnNode  extends BeanNode<Column> implements Observer{
     public ColumnNode(Column bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
         if(bean.getName()==null){

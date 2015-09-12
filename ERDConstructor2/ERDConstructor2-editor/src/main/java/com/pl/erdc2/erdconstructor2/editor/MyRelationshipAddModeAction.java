@@ -84,7 +84,7 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
                 shadow.setVisible(false);
                 shadow.repaint();
             }
-        }
+        }              
         return WidgetAction.State.CHAIN_ONLY;
     }
     
