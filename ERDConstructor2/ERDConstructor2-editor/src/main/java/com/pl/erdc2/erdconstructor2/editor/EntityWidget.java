@@ -4,6 +4,7 @@ import com.pl.erdc2.erdconstructor2.api.Column;
 import com.pl.erdc2.erdconstructor2.api.ColumnNode;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.Relationship;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +17,8 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import org.netbeans.api.visual.border.Border;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.model.ObjectState;
@@ -24,12 +27,13 @@ import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
 
 
-public class EntityWidget extends Widget{
+public class EntityWidget extends Widget implements Observer{
     private final EntityNode bean;
     
     public EntityWidget(GraphSceneImpl scene, EntityNode _bean){
         super(scene);
         bean=_bean;
+        bean.getLookup().lookup(Entity.class).addObserver(this);
         setCheckClipping(true);   
         
         Font f = new Font("Arial", Font.BOLD, HEADER_FONT_SIZE);
@@ -135,5 +139,17 @@ public class EntityWidget extends Widget{
     }
     private Entity getEntity(){
         return bean.getLookup().lookup(Entity.class);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        String argg = (String)arg;
+        if(argg.equals("name")){
+            this.repaint();
+            this.revalidate();
+            this.getScene().validate();
+            this.getScene().repaint();
+            ((GraphSceneImpl)this.getScene()).getAssociatedTopComponent().repaint();
+        }
     }
 }
