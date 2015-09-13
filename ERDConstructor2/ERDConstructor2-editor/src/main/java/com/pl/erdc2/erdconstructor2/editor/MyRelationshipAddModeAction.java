@@ -4,12 +4,17 @@ import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
+import java.awt.BasicStroke;
 import java.beans.IntrospectionException;
+import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
 import org.netbeans.api.visual.anchor.AnchorFactory;
+import org.netbeans.api.visual.layout.LayoutFactory;
 import org.netbeans.api.visual.router.RouterFactory;
 import org.netbeans.api.visual.widget.ConnectionWidget;
+import org.netbeans.api.visual.widget.LabelWidget;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 
@@ -53,16 +58,36 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
         if(widget instanceof EntityWidget){    
             Relationship r = new Relationship();
             RelationshipNode node;
-            r.setSourceEntityId(((EntityWidget)firstWidgetOfRelationship).getBean().getLookup().lookup(Entity.class).getId());
-            r.setDestinationEntityId(((EntityWidget)widget).getBean().getLookup().lookup(Entity.class).getId());
+            r.setSourceEntity(((EntityWidget)firstWidgetOfRelationship).getBean().getLookup().lookup(Entity.class));
+            r.setDestinationEntity(((EntityWidget)firstWidgetOfRelationship).getBean().getLookup().lookup(Entity.class));
             try {
-                node = new RelationshipNode(r);
+                node = new RelationshipNode(r, Children.LEAF);
                 Node[] toAdd = {node};
                 EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().add(toAdd);
             } catch (IntrospectionException ex) {
                 Exceptions.printStackTrace(ex);
+                return WidgetAction.State.CONSUMED;
             }
             
+            RelationshipWidget conn = new RelationshipWidget(gs,node);
+            conn.setRouter(new MyRouter());
+            conn.setSourceAnchor (new MyAnchor(firstWidgetOfRelationship, false));
+            conn.setTargetAnchor (new MyAnchor(widget, false));
+            conn.setStroke(new BasicStroke(2));
+            conn.updateControlPointPosition();
+            conn.getActions().addAction(new MySelectWidgetAction());
+             
+            LabelWidget label = new LabelWidget (gs, node.getDisplayName());
+            label.setOpaque(true);
+            label.getActions().addAction(new MySelectWidgetAction());
+            label.getActions().addAction(ActionFactory.createMoveAction());
+            conn.addChild(label);
+            conn.setLabel(label);
+            conn.setConstraint(label, LayoutFactory.ConnectionWidgetLayoutAlignment.CENTER_RIGHT, 0.5f);
+           
+            
+            gs.getConnectionLayer().addChild(conn);
+
             return WidgetAction.State.CONSUMED;
         }
         

@@ -12,6 +12,9 @@ public class EntityChildFactory extends ChildFactory<Entity> {
 
     @Override
     protected boolean createKeys(List<Entity> list) {
+        //test entities
+        list.add(new Entity());
+        list.add(new Entity());
         return true;
     }
 
