@@ -15,7 +15,8 @@ import org.openide.util.lookup.Lookups;
 
 @Messages({
     "# {0} - relationship",
-    "RelationshipDefaultName=Relatioship {0}"
+    "RelationshipDefaultName=Relatioship {0}",
+    "Delete=Delete"
 })
 public class RelationshipNode extends BeanNode<Relationship> {
 
@@ -61,22 +62,24 @@ public class RelationshipNode extends BeanNode<Relationship> {
     {
         public ContextMenuItem()
         {
-            putValue (NAME, "Delete");
+            putValue (NAME, Bundle.Delete());
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             Relationship rel = getLookup().lookup(Relationship.class);
-            switch(e.getActionCommand())
+            Relationship rel2;
+            int op = 0;
+            if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
+                op=1;
+            switch(op)
             {
-                case "Delete": 
-                   
+                case 1: 
                     Node nodes[] = EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes();
                     for(Node n:nodes)
                     {
-                        String s=n.getDisplayName();
-                        s=s.replace("Relatioship ", "");
-                        if(rel.getId()==Integer.valueOf(s))
+                        rel2 = n.getLookup().lookup(Relationship.class);
+                        if(rel.getId()==rel2.getId())
                         {
                             Node nodesToRemove[]={n};
                             EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(nodesToRemove);

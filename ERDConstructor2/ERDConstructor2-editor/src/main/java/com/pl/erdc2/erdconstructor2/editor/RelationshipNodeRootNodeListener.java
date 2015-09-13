@@ -32,6 +32,7 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
                     RelationshipWidget rw = (RelationshipWidget)w;
                     if(rw.getBean().equals(n)){
                         toRemove=w;
+                        break;
                     }
                 }
             }
