@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 
@@ -32,8 +34,10 @@ public class EntityPanel extends JPanel{
     JScrollPane tablePanel;
     JButton addButton;
     EntityNode selectedNode = null;
+    private static final Logger logger = Logger.getLogger(EntityPanel.class);
 
     public EntityPanel() {
+        BasicConfigurator.configure();
         setName(Bundle.CTL_ColumnEditorTopComponent());
         setToolTipText(Bundle.HINT_ColumnEditorTopComponent());
                 
@@ -104,6 +108,7 @@ public class EntityPanel extends JPanel{
             selectedNode.getChildren().add(nodesAdd);
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);
+            logger.error(ex);
         }
         updateTable();                
     }

@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -47,6 +49,11 @@ import org.openide.windows.WindowManager;
     "Open_Error=An error occurred while attempting to open file"
 })
 public final class OpenFileAction implements ActionListener {
+    private static final Logger logger = Logger.getLogger(OpenFileAction.class);
+    
+    public OpenFileAction(){
+        BasicConfigurator.configure();
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         File home = new File(System.getProperty("user.home"));
@@ -105,6 +112,7 @@ public final class OpenFileAction implements ActionListener {
                 message.setMessageType(NotifyDescriptor.Message.ERROR_MESSAGE);
                 Object result = DialogDisplayer.getDefault().notify(message);
                 Exceptions.printStackTrace(ex);
+                logger.error(ex);
             }
         }
         else
@@ -112,6 +120,7 @@ public final class OpenFileAction implements ActionListener {
                 DataObject.find(FileUtil.toFileObject(toAdd)).getLookup().lookup(OpenCookie.class).open();
         } catch (DataObjectNotFoundException ex) {
             Exceptions.printStackTrace(ex);
+            logger.error(ex);
         }
     }
 }
