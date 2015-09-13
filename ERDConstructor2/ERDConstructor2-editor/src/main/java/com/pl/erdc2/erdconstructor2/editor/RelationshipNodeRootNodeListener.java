@@ -1,27 +1,26 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
-import java.io.IOException;
-import java.util.Iterator;
 import org.netbeans.api.visual.widget.Widget;
+     
+
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeAdapter;
 import org.openide.nodes.NodeMemberEvent;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author Kuba
+ * @author Piotrek
  */
 public class RelationshipNodeRootNodeListener extends NodeAdapter{
-     private final GraphSceneImpl gs;
-     
-     public RelationshipNodeRootNodeListener(GraphSceneImpl _gs)
-     {
-      gs=_gs;   
-     }
-     
-     @Override
+    private final GraphSceneImpl gs;
+
+    public RelationshipNodeRootNodeListener(GraphSceneImpl gs) {
+        this.gs = gs;
+    }
+    
+    @Override
      public void childrenRemoved(NodeMemberEvent ev) 
      {
          Widget toRemove = null;
@@ -42,4 +41,13 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
         }
      }
     
+    @Override
+    public void childrenAdded(NodeMemberEvent ev) {
+        for(Node n : ev.getDelta()){
+            if(n instanceof RelationshipNode){
+                gs.addNode(n);
+                gs.validate();
+            }
+        }
+    }
 }

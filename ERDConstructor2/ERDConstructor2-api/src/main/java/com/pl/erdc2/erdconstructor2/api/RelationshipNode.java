@@ -6,6 +6,8 @@ import java.beans.IntrospectionException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import static javax.swing.Action.NAME;
+import java.util.Observable;
+import java.util.Observer;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -18,21 +20,29 @@ import org.openide.util.lookup.Lookups;
     "RelationshipDefaultName=Relatioship {0}",
     "Delete=Delete"
 })
-public class RelationshipNode extends BeanNode<Relationship> {
-
+public class RelationshipNode extends BeanNode<Relationship> implements Observer{
+    
     
     public RelationshipNode(Relationship bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        }
+        bean.addObserver(this);
         setDisplayName(bean.getName());
     }
+    
     public RelationshipNode(Relationship bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.RelationshipDefaultName(bean.getId()));
+        }
+        bean.addObserver(this);
         setDisplayName(bean.getName());
     }
+    
     @Override
     public Image getIcon (int type) {    
         return ImageUtilities.loadImage("images/relationshipIcon.png");
@@ -54,14 +64,12 @@ public class RelationshipNode extends BeanNode<Relationship> {
     }
     
     @Override
-    public Action[] getActions(boolean popup)
-    {
+    public Action[] getActions(boolean popup){
         return new Action[] {new ContextMenuItem()};
     }
-    private class ContextMenuItem extends AbstractAction
-    {
-        public ContextMenuItem()
-        {
+    
+    private class ContextMenuItem extends AbstractAction{
+        public ContextMenuItem(){
             putValue (NAME, Bundle.Delete());
         }
 
@@ -89,8 +97,24 @@ public class RelationshipNode extends BeanNode<Relationship> {
                 break;
             }
         }
-
-
-        
+    }
+    
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o instanceof Relationship){
+            Relationship rel = (Relationship)o;
+            String property = (String)arg;
+            if(property.equals("name")){ 
+                String old = this.getDisplayName();
+                this.setDisplayName(rel.getName());
+                this.fireDisplayNameChange(old, rel.getName());
+            }
+        }
+    }
+    
+    public Relationship getRelationship(){
+        if(this.getLookup()!=null)
+            return this.getLookup().lookup(Relationship.class);
+        return null;
     }
 }
