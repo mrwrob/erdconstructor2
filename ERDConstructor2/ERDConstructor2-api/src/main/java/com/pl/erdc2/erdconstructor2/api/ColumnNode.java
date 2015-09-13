@@ -1,13 +1,23 @@
 package com.pl.erdc2.erdconstructor2.api;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.Lookups;
+
+ @Messages({
+
+    "Delete=Delete"
+ })
 
 public class ColumnNode  extends BeanNode<Column> implements Observer{
     public ColumnNode(Column bean) throws IntrospectionException {
@@ -49,5 +59,50 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
     @Override
     public Image getOpenedIcon(int i) {
         return getIcon (i);
+    }
+    @Override 
+    public Action[] getActions(boolean popup){
+       return new Action[]{new ContextMenuItem()}; 
+    }
+    
+    public class ContextMenuItem extends AbstractAction{
+
+        public ContextMenuItem()
+        {
+            putValue(NAME, Bundle.Delete());
+        }
+         
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Column col = getLookup().lookup(Column.class);
+            int op=0;
+            if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
+                op=1;
+            switch(op)
+            {
+                case 1: 
+                    for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){                  
+                    if(n instanceof EntityNode)
+                    {
+                       Node nod[]=n.getChildren().getNodes();
+                       for(Node no:nod)
+                       {
+                           if(no instanceof ColumnNode)
+                           {
+                               Column c=no.getLookup().lookup(Column.class);
+                               if(c.getId()==col.getId())
+                               {
+                                   System.out.println(c.getId());
+                                   Node toRemove[]={no};
+                                   n.getChildren().remove(toRemove);
+                               }
+                           }
+                       }
+                        
+                    }
+        }
+            }
+        }
+        
     }
 }
