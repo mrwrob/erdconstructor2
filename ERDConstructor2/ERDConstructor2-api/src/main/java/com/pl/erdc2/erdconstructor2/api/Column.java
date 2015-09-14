@@ -1,10 +1,9 @@
 package com.pl.erdc2.erdconstructor2.api;
 
-import java.io.Serializable;
 import java.util.Observable;
 
 
-public class Column extends Observable implements Serializable{
+public class Column extends Observable{
     public static final String[] DATA_TYPES={"int","float","bigint","date","datetime","time","tinyint","char","varchar","text","binary"};
     private String name;
     private String description;

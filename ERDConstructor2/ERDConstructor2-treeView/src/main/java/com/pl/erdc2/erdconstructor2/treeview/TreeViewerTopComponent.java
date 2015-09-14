@@ -2,7 +2,6 @@ package com.pl.erdc2.erdconstructor2.treeview;
 
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -45,7 +44,7 @@ public final class TreeViewerTopComponent extends TopComponent implements Explor
         initComponents();
         setName(Bundle.CTL_TreeViewerTopComponent());
         setToolTipText(Bundle.HINT_TreeViewerTopComponent());
-                
+        
         setLayout(new BorderLayout());
         BeanTreeView entityViewer = new BeanTreeView();  
         entityViewer.setRootVisible(false);

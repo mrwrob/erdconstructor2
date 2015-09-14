@@ -21,19 +21,17 @@ import org.openide.util.lookup.Lookups;
 public class EntityNode extends BeanNode<Entity> {   
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
-        if(bean.getId()==0){
-            bean.setId(getNextIdValue());
-            bean.setName(Bundle.EntityDefaultName(bean.getId()));
-        }
-        setDisplayName(bean.getName());        
+
+        bean.setId(getNextIdValue());
+        bean.setName(Bundle.EntityDefaultName(+bean.getId()));
+        setDisplayName(bean.getName());
+
     }
 
     public EntityNode(Entity bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        if(bean.getId()==0){
-            bean.setId(getNextIdValue());
-            bean.setName(Bundle.EntityDefaultName(bean.getId()));
-        }
+        bean.setId(getNextIdValue());
+        bean.setName(Bundle.EntityDefaultName(bean.getId()));
         setDisplayName(bean.getName());
     }
     
@@ -63,29 +61,45 @@ public class EntityNode extends BeanNode<Entity> {
         @Override
         public void actionPerformed(ActionEvent e) {  
             
-            Entity entity = entityNode.getBean();
-            int entityId = entity.getId();
-            
-            Node entityRoot = EntityExplorerManagerProvider.getEntityNodeRoot();
-            Node[] entityToDelete = {entityNode};
-            entityRoot.getChildren().remove(entityToDelete);                        
-            
-            Node relationsRoot = EntityExplorerManagerProvider.getRelatioshipNodeRoot();
-            Node[] relationsNodes = relationsRoot.getChildren().getNodes();
-            ArrayList<Node> listRelationsToDelete = new ArrayList<>();
-            for(Node n: relationsNodes) {
-                RelationshipNode rn = (RelationshipNode) n;
-                Relationship r = rn.getBean();
-                
-                if(r.getSourceEntityId() == entityId || r.getDestinationEntityId() == entityId){
-                    listRelationsToDelete.add(n);
-                }
+            int op = 0;
+            if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
+                op=1;
+            switch(op)
+            {
+                case 1:
+                    Entity entity = entityNode.getBean();
+                    Entity entity2;
+                    int entityId = entity.getId();              
+                    Node entityRoot = EntityExplorerManagerProvider.getEntityNodeRoot();
+                    Node[] entityNodes = entityRoot.getChildren().getNodes();
+
+                    for(Node n :  entityNodes){
+
+                        entity2 = n.getLookup().lookup(Entity.class);
+
+                        if(entity2.getId() == entityId){
+                            Node nodesToRemove[]={n};
+                            entityRoot.getChildren().remove(nodesToRemove);
+                            break;
+                        }                                
+                    }           
+
+                    Node relationNodes[] = EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes();
+                    ArrayList<Node> listRelationsToDelete = new ArrayList<>();
+                    for(Node n: relationNodes){
+
+                        Relationship r = n.getLookup().lookup(Relationship.class);
+
+                        if(r.getSourceEntity().getId() == entityId || r.getDestinationEntity().getId() == entityId){
+                            listRelationsToDelete.add(n);
+                        }
+                    }
+                    Node[] arrayRelatonsToDelete = new Node[listRelationsToDelete.size()];
+                    arrayRelatonsToDelete = listRelationsToDelete.toArray(arrayRelatonsToDelete);
+
+                    EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(arrayRelatonsToDelete); 
+                    break;
             }
-            
-            Node[] arrayRelatonsToDelete = new Node[listRelationsToDelete.size()];
-            arrayRelatonsToDelete = listRelationsToDelete.toArray(arrayRelatonsToDelete);
-            
-            relationsRoot.getChildren().remove(arrayRelatonsToDelete);                                  
         }
     }
     

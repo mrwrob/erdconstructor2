@@ -12,8 +12,8 @@ import org.openide.nodes.NodeMemberEvent;
 public class EntityNodeRootNodeListener extends NodeAdapter{
     private final GraphSceneImpl gs;
 
-    public EntityNodeRootNodeListener(GraphSceneImpl gs) {
-        this.gs = gs;
+    public EntityNodeRootNodeListener(GraphSceneImpl _gs) {
+        gs = _gs;
     }
     
     @Override
