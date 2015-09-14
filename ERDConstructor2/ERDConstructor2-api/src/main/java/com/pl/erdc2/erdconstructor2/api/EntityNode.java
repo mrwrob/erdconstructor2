@@ -3,9 +3,12 @@ package com.pl.erdc2.erdconstructor2.api;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
+
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.util.Observable;
+import java.util.Observer;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -18,21 +21,25 @@ import org.openide.util.lookup.Lookups;
     "EntityDefaultName=Entity {0}",
     "DeleteNode=Delete entity"
 })
-public class EntityNode extends BeanNode<Entity> {   
+
+public class EntityNode extends BeanNode<Entity>  implements Observer{    
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
 
         bean.setId(getNextIdValue());
         bean.setName(Bundle.EntityDefaultName(+bean.getId()));
         setDisplayName(bean.getName());
-
+        bean.addObserver(this);
     }
 
     public EntityNode(Entity bean, Children children) throws IntrospectionException {
         super(bean, children, Lookups.singleton(bean));
-        bean.setId(getNextIdValue());
-        bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        if(bean.getId()==0){
+            bean.setId(getNextIdValue());
+            bean.setName(Bundle.EntityDefaultName(bean.getId()));
+        }
         setDisplayName(bean.getName());
+        bean.addObserver(this);
     }
     
     @Override
@@ -46,14 +53,14 @@ public class EntityNode extends BeanNode<Entity> {
     
     @Override
     public Action[] getActions(boolean popup) {
-        return new Action[]{new DeleteAction(this)};
+        return new Action[]{new ContextMenuItem(this)};
     }
 
-    private class DeleteAction extends AbstractAction {
+    private class ContextMenuItem extends AbstractAction {
 
         EntityNode entityNode;
         
-        public DeleteAction(EntityNode entityNode) {
+        public ContextMenuItem(EntityNode entityNode) {
             this.entityNode = entityNode;
             putValue(NAME, Bundle.DeleteNode());
         }
@@ -62,7 +69,7 @@ public class EntityNode extends BeanNode<Entity> {
         public void actionPerformed(ActionEvent e) {  
             
             int op = 0;
-            if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
+            if(e.getActionCommand().equalsIgnoreCase(Bundle.DeleteNode()))
                 op=1;
             switch(op)
             {
@@ -90,7 +97,7 @@ public class EntityNode extends BeanNode<Entity> {
 
                         Relationship r = n.getLookup().lookup(Relationship.class);
 
-                        if(r.getSourceEntity().getId() == entityId || r.getDestinationEntity().getId() == entityId){
+                        if(r.getSourceEntityId()== entityId || r.getDestinationEntityId() == entityId){
                             listRelationsToDelete.add(n);
                         }
                     }
@@ -112,5 +119,20 @@ public class EntityNode extends BeanNode<Entity> {
             max= id>max ? id : max;
         }
         return ++max;
+    }
+
+    
+    @Override
+    public void update(Observable o, Object arg) {
+        if(!(o instanceof Entity))
+            return;
+        
+        Entity col = (Entity)o;
+        String property = (String)arg;
+        if(property.equals("name")){ 
+            String old = this.getDisplayName();
+            this.setDisplayName(col.getName());
+            this.fireDisplayNameChange(old, col.getName());
+        }
     }
 }

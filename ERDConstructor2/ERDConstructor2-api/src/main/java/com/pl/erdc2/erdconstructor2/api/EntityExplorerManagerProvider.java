@@ -59,6 +59,11 @@ public class EntityExplorerManagerProvider{
         em.getRootContext().getChildren().add(nodes);
     }
     
+    public static void clean(){
+       entityNodeRoot.getChildren().remove(entityNodeRoot.getChildren().getNodes());
+       relatioshipNodeRoot.getChildren().remove(relatioshipNodeRoot.getChildren().getNodes());
+    }
+    
     public static ExplorerManager getExplorerManager(){
         return em;
     }
