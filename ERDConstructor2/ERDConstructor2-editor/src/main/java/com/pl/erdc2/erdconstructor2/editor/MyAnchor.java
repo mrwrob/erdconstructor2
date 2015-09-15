@@ -52,6 +52,50 @@ public class MyAnchor extends Anchor {
         left=Math.abs(controlPoint.x - bounds.x);
         right=Math.abs(controlPoint.x - (bounds.x+bounds.width));
         
+        if(fcw.isSelfRelationship()){
+            int fix=60;
+            if(between(controlPoint.x, bounds.x, bounds.x+bounds.width)){
+                fix/=3;
+                controlPoint.x+=fcw.getSourceAnchor().equals(this)?fix:-fix;
+                if(controlPoint.x<bounds.x)
+                    controlPoint.x=bounds.x;
+                if(controlPoint.x>bounds.x+bounds.width)
+                    controlPoint.x=bounds.x+bounds.width;
+            }
+            else if(between(controlPoint.y, bounds.y, bounds.y+bounds.height)){
+                fix/=3;
+                controlPoint.y+=fcw.getSourceAnchor().equals(this)?fix:-fix;
+                if(controlPoint.y<bounds.y)
+                    controlPoint.y=bounds.y;
+                if(controlPoint.y>bounds.y+bounds.height)
+                    controlPoint.y=bounds.y+bounds.height;
+            }
+            else if(left<=right && top <=bottom){
+                if(fcw.getSourceAnchor().equals(this))
+                    controlPoint.x+=fix;
+                else
+                    controlPoint.y+=fix;
+            }
+            else if(left<=right && bottom<=top){
+               if(fcw.getSourceAnchor().equals(this))
+                    controlPoint.y-=fix;
+                else
+                    controlPoint.x+=fix;
+            }
+            else if(right<=left && top <=bottom){
+                if(fcw.getSourceAnchor().equals(this))
+                    controlPoint.x-=fix;
+                else
+                    controlPoint.y+=fix;
+            }
+            else if(right<=left && bottom<=top){
+               if(fcw.getSourceAnchor().equals(this))
+                    controlPoint.y-=fix;
+                else
+                    controlPoint.x-=fix;
+            }
+        }
+        
         if(between(controlPoint.x, bounds.x, bounds.x+bounds.width)){
             if(top < bottom){
                 return new Anchor.Result(new Point(controlPoint.x, bounds.y), Direction.TOP);
