@@ -22,45 +22,45 @@ public class MyEntityAddModeAction extends WidgetAction.Adapter {
     public MyEntityAddModeAction(GraphSceneImpl gs) {
         EntityNode en;
         scene = gs;
-        try {
-            en = new EntityNode(new Entity());
-            en.setDisplayName("");
-            shadow = new EntityWidget(gs, en);
-            shadow.setVisible(false);
-            shadow.setPreferredSize(new Dimension(170, 70));
-            shadow.recalculateMinSize();
-            shadow.setEnabled(false);
-            gs.getMainLayer().addChild(shadow);
-        } catch (IntrospectionException ex) {
-            Exceptions.printStackTrace(ex);
-            logger.error(ex);
-        }
+        if(shadow==null)
+            try {
+                en = new EntityNode(new Entity());
+                en.setDisplayName("");
+                shadow = new EntityWidget(gs, en);
+                shadow.setVisible(false);
+                shadow.setPreferredSize(new Dimension(170, 70));
+                shadow.recalculateMinSize();
+                shadow.setEnabled(false);
+                gs.getMainLayer().addChild(shadow);
+            } catch (IntrospectionException ex) {
+                Exceptions.printStackTrace(ex);
+                logger.error(ex);
+            }
     }
 
     @Override
     public State mouseReleased(Widget widget, WidgetMouseEvent event) {
-        if(scene.isAddEntityMode()){
-            if(event.getButton()==1){
-                try {
-                    Entity en = new Entity();
-                    EntityNode node = new EntityNode(en, Children.create(new ColumnChildFactory(), true));
-                    Point p = event.getPoint();
-                    p.x-=90;
-                    p.y-=40;
-                    en.setLocation(p);
-                    Node[] toAdd = {node};
-                    EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().add(toAdd);
-                    shadow.setVisible(false);
-                    shadow.repaint();
-                    shadow.bringToFront();
-                } catch (IntrospectionException ex) {
-                    Exceptions.printStackTrace(ex);
-                    logger.error(ex);
-                }
-            }
-            else{
-                scene.setAddEntityMode(false);
+        if(event.getButton()!=1){
+            scene.setAddEntityMode(false);
+            shadow.setVisible(false);
+            return WidgetAction.State.CONSUMED;
+        }
+        if(scene.isAddEntityMode() && (widget instanceof GraphSceneImpl)){
+            try {
+                Entity en = new Entity();
+                EntityNode node = new EntityNode(en, Children.create(new ColumnChildFactory(), true));
+                Point p = event.getPoint();
+                p.x-=90;
+                p.y-=40;
+                en.setLocation(p);
+                Node[] toAdd = {node};
+                EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().add(toAdd);
                 shadow.setVisible(false);
+                shadow.repaint();
+                shadow.bringToFront();
+            } catch (IntrospectionException ex) {
+                Exceptions.printStackTrace(ex);
+                logger.error(ex);
             }
         }
         return WidgetAction.State.CONSUMED;
@@ -68,7 +68,7 @@ public class MyEntityAddModeAction extends WidgetAction.Adapter {
 
     @Override
     public State mouseMoved(Widget widget, WidgetMouseEvent event) {
-        if(scene.isAddEntityMode()){
+        if(scene.isAddEntityMode() && (widget instanceof GraphSceneImpl)){
             if(!scene.getMainLayer().getChildren().contains(shadow))
                 scene.getMainLayer().addChild(shadow);
             

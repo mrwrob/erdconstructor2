@@ -23,8 +23,6 @@ import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.layout.LayoutFactory;
-import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 
 public class GraphSceneImpl extends GraphScene implements LookupListener, Serializable{
@@ -163,6 +161,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
             widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
         
         widget.getActions().addAction(new MyRelationshipAddModeAction());
+        widget.getActions().addAction(new MyEntityAddModeAction(this));
         widget.getActions().addAction(this.createWidgetHoverAction());
         widget.getActions().addAction(ActionFactory.createResizeAction());
         widget.getActions().addAction(new MySelectWidgetAction());
@@ -259,6 +258,8 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
         this.repaint();
+        this.revalidate();
+        
     }
     public void toggleAddRelationshipMode(){
         this.setAddRelationshipMode(!addRelationshipMode);
