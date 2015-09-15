@@ -23,8 +23,6 @@ import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.layout.LayoutFactory;
-import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 
 public class GraphSceneImpl extends GraphScene implements LookupListener, Serializable{
@@ -37,6 +35,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
     private final EditorTopComponent associatedTopComponent;
 
     private boolean addRelationshipMode;
+    private boolean addEntityMode;
     
     public GraphSceneImpl(EditorTopComponent tc) {
         this.setLookFeel(new OurLookFeelImpl());
@@ -55,6 +54,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         relatioshipLookup.addLookupListener(this);
         
         getActions().addAction(new MyRelationshipAddModeAction());
+        getActions().addAction(new MyEntityAddModeAction(this));
         
         addChild(connectionLayer);
         addChild(interactionLayer);
@@ -161,6 +161,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
             widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
         
         widget.getActions().addAction(new MyRelationshipAddModeAction());
+        widget.getActions().addAction(new MyEntityAddModeAction(this));
         widget.getActions().addAction(this.createWidgetHoverAction());
         widget.getActions().addAction(ActionFactory.createResizeAction());
         widget.getActions().addAction(new MySelectWidgetAction());
@@ -250,17 +251,38 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
 
     public void setAddRelationshipMode(boolean addRelationshipMode) {
         this.addRelationshipMode = addRelationshipMode;
-        if(addRelationshipMode==true){
+        if(addRelationshipMode==true || isAddEntityMode()){
             this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         }
         else{
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
+        this.repaint();
+        this.revalidate();
+        
     }
     public void toggleAddRelationshipMode(){
         this.setAddRelationshipMode(!addRelationshipMode);
     }
+    
+    public boolean isAddEntityMode() {
+        return addEntityMode;
+    }
 
+    public void setAddEntityMode(boolean addEntityMode) {
+        this.addEntityMode = addEntityMode;
+        if(addEntityMode==true || isAddRelationshipMode()){
+            this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        }
+        else{
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+        this.repaint();
+    }
+    public void toggleAddEntityMode(){
+        this.setAddEntityMode(!addEntityMode);
+    }
+    
     public LayerWidget getConnectionLayer() {
         return connectionLayer;
     }

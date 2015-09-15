@@ -25,7 +25,16 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
     public WidgetAction.State mousePressed(Widget widget, WidgetAction.WidgetMouseEvent event) {
         
         GraphSceneImpl gs = (GraphSceneImpl)widget.getScene();
-
+        
+        if(event.getButton()!=1){
+            gs.setAddRelationshipMode(false);
+            gs.setAddEntityMode(false);
+            if(shadow!=null)
+                gs.getConnectionLayer().removeChild(shadow);
+            shadow=null;
+            return WidgetAction.State.CHAIN_ONLY;
+        }
+        
         if(widget instanceof EntityWidget){    
             if(gs.isAddRelationshipMode()){
                 drawingRelationship = true;
@@ -62,6 +71,12 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
     @Override
     public State mouseReleased(Widget widget, WidgetMouseEvent event) {
         GraphSceneImpl gs = (GraphSceneImpl)widget.getScene();
+        
+        
+        
+        if(!gs.isAddRelationshipMode())
+            return WidgetAction.State.CHAIN_ONLY;
+        
         if(!drawingRelationship)
             return WidgetAction.State.CHAIN_ONLY;
         
