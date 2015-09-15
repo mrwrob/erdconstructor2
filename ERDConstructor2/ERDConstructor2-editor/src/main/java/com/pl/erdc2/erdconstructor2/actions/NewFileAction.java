@@ -23,8 +23,8 @@ public final class NewFileAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         EditorTopComponent etc;
         etc = (EditorTopComponent) WindowManager.getDefault().findTopComponent("editorTopComponent");
-        etc.getScene().clean();
         EntityExplorerManagerProvider.clean();
+        etc.getScene().clean();
         etc.getScene().revalidate();
         etc.getScene().repaint();
         etc.repaint();

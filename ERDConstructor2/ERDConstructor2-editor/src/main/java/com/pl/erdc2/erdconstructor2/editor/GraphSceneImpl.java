@@ -37,6 +37,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
     private final EditorTopComponent associatedTopComponent;
 
     private boolean addRelationshipMode;
+    private boolean addEntityMode;
     
     public GraphSceneImpl(EditorTopComponent tc) {
         this.setLookFeel(new OurLookFeelImpl());
@@ -55,6 +56,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         relatioshipLookup.addLookupListener(this);
         
         getActions().addAction(new MyRelationshipAddModeAction());
+        getActions().addAction(new MyEntityAddModeAction(this));
         
         addChild(connectionLayer);
         addChild(interactionLayer);
@@ -250,17 +252,36 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
 
     public void setAddRelationshipMode(boolean addRelationshipMode) {
         this.addRelationshipMode = addRelationshipMode;
-        if(addRelationshipMode==true){
+        if(addRelationshipMode==true || isAddEntityMode()){
             this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         }
         else{
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
+        this.repaint();
     }
     public void toggleAddRelationshipMode(){
         this.setAddRelationshipMode(!addRelationshipMode);
     }
+    
+    public boolean isAddEntityMode() {
+        return addEntityMode;
+    }
 
+    public void setAddEntityMode(boolean addEntityMode) {
+        this.addEntityMode = addEntityMode;
+        if(addEntityMode==true || isAddRelationshipMode()){
+            this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        }
+        else{
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+        this.repaint();
+    }
+    public void toggleAddEntityMode(){
+        this.setAddEntityMode(!addEntityMode);
+    }
+    
     public LayerWidget getConnectionLayer() {
         return connectionLayer;
     }

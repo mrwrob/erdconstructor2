@@ -68,8 +68,10 @@ public class EntityWidget extends Widget implements Observer{
         final Rectangle bounds = getClientArea();
         String s = bean.getDisplayName().length()>0 ? bean.getDisplayName() : ENTITY_DEFAULT_NAME;
         
-        g2.setColor(ENTITY_BACKGROUND);
-        g2.fillRoundRect(bounds.x, bounds.y, bounds.width-1, bounds.height-1,BORDER_ROUND,BORDER_ROUND);
+        if(this.isEnabled()){
+            g2.setColor(ENTITY_BACKGROUND);
+            g2.fillRoundRect(bounds.x, bounds.y, bounds.width-1, bounds.height-1,BORDER_ROUND,BORDER_ROUND);
+        }
         
         if(isSelected())
             g2.setColor(ENTITY_SELECTED_BLUE); 

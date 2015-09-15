@@ -27,15 +27,16 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
          for(Node n : ev.getDelta()){
             if(n instanceof RelationshipNode){
                 for(Widget w : gs.getConnectionLayer().getChildren()){
-                if(w instanceof RelationshipWidget){
-                    RelationshipWidget rw = (RelationshipWidget)w;
-                    if(rw.getBean().equals(n)){
-                        toRemove=w;
-                        break;
+                    if(w instanceof RelationshipWidget){
+                        RelationshipWidget rw = (RelationshipWidget)w;
+                        if(rw.getBean().equals(n)){
+                            toRemove=w;
+                            break;
+                        }
                     }
                 }
-            }
-                gs.getConnectionLayer().removeChild(toRemove);
+                if(gs.getConnectionLayer().getChildren().contains(toRemove))
+                    gs.getConnectionLayer().removeChild(toRemove);
                 gs.validate();
             }
         }

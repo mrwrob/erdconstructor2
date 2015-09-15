@@ -43,6 +43,15 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
     @Override
     public State mouseReleased(Widget widget, WidgetMouseEvent event) {
         GraphSceneImpl gs = (GraphSceneImpl)widget.getScene();
+        
+        if(!gs.isAddRelationshipMode())
+            return WidgetAction.State.CHAIN_ONLY;
+        
+        if(event.getButton()!=1 && !drawingRelationship){
+            gs.setAddRelationshipMode(false);
+            return WidgetAction.State.CONSUMED;
+        }
+        
         if(!drawingRelationship)
             return WidgetAction.State.CHAIN_ONLY;
         

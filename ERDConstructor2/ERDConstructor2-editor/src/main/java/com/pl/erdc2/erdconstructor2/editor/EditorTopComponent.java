@@ -57,6 +57,7 @@ import org.openide.util.Utilities;
 public final class EditorTopComponent extends TopComponent implements LookupListener{
     private GraphSceneImpl scene;
     JToggleButton addRelationshipMode;
+    JToggleButton addEntityButton;
     
     public EditorTopComponent() {
         initComponents();
@@ -74,7 +75,7 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         JToolBar toolbar = new JToolBar();
         
         Image addEntityImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/addEntityIcon.png");
-        JButton addEntityButton = new JButton("", new ImageIcon(addEntityImage));
+        addEntityButton = new JToggleButton("", new ImageIcon(addEntityImage));
         addEntityButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -161,17 +162,17 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     }
     
     private void addEntityButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
-        Entity en = new Entity();
-        EntityNode node = new EntityNode(en, Children.create(new ColumnChildFactory(), true));
-        Node[] toAdd = {node};
-        EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().add(toAdd);
-
         if(addRelationshipMode.isSelected()){
             addRelationshipMode.setSelected(false);
             scene.setAddRelationshipMode(false);
         }
+        scene.toggleAddEntityMode();
     } 
     private void addRelationshipModeButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
+        if(addEntityButton.isSelected()){
+            addEntityButton.setSelected(false);
+            scene.setAddEntityMode(false);
+        }
         scene.toggleAddRelationshipMode();
     } 
     
