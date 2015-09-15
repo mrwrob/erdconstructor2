@@ -25,4 +25,14 @@ public class EntityNodeRootNodeListener extends NodeAdapter{
             }
         }
     }
+    
+    @Override
+    public void childrenRemoved(NodeMemberEvent ev) {
+        for(Node n : ev.getDelta()){
+            if(n instanceof EntityNode){
+                gs.removeNode(n);
+                gs.validate();
+            }
+        }
+    }
 }

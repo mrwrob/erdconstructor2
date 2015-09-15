@@ -20,8 +20,11 @@ import org.openide.util.lookup.Lookups;
     "RelationshipDefaultName=Relatioship {0}",
     "Delete=Delete"
 })
+
 public class RelationshipNode extends BeanNode<Relationship> implements Observer{
     
+
+    private Relationship bean;
     
     public RelationshipNode(Relationship bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
@@ -31,6 +34,7 @@ public class RelationshipNode extends BeanNode<Relationship> implements Observer
         }
         bean.addObserver(this);
         setDisplayName(bean.getName());
+        this.bean = bean;
     }
     
     public RelationshipNode(Relationship bean, Children children) throws IntrospectionException {
@@ -61,6 +65,11 @@ public class RelationshipNode extends BeanNode<Relationship> implements Observer
             max= id>max ? id : max;
         }
         return ++max;
+    }
+        
+    @Override
+    public Relationship getBean(){
+        return this.bean;              
     }
     
     @Override
