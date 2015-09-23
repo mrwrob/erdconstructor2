@@ -5,6 +5,7 @@ import java.beans.IntrospectionException;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.nodes.NodeListener;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.Lookups;
@@ -13,7 +14,7 @@ import org.openide.util.lookup.Lookups;
     "# {0} - entity",
     "EntityDefaultName=Entity {0}"
 })
-public class EntityNode extends BeanNode<Entity> {    
+public class EntityNode extends BeanNode<Entity> {  
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
         if(bean.getId()==0){

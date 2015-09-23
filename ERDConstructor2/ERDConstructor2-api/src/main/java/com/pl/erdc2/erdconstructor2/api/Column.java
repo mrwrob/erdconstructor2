@@ -58,13 +58,11 @@ public class Column extends Observable implements Serializable{
         notifyObservers("type");
     }
     
-    public int getId()
-    {
+    public int getId(){
         return id;
     }
     
-    public void setId(int id)
-    {
+    public void setId(int id){
         this.id=id;
     }
 }

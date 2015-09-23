@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.nodes.NodeAdapter;
+import org.openide.nodes.NodeEvent;
 import org.openide.nodes.NodeMemberEvent;
 
 public class ColumnNodeListener extends NodeAdapter implements Observer{
@@ -31,6 +32,12 @@ public class ColumnNodeListener extends NodeAdapter implements Observer{
         if(c!=null)
             c.addObserver(this);
         gs.validate();
+    }
+    
+    @Override
+    public void childrenRemoved(NodeMemberEvent ev){
+        gs.validate();
+        gs.getAssociatedTopComponent().repaint();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.pl.erdc2.erdconstructor2.api;
 
+
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
@@ -14,8 +15,8 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.Lookups;
 
- @Messages({
 
+ @Messages({
     "Delete=Delete"
  })
 
@@ -95,14 +96,14 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
                                    System.out.println(c.getId());
                                    Node toRemove[]={no};
                                    n.getChildren().remove(toRemove);
+                                   
                                }
                            }
-                       }
-                        
+                       } 
                     }
-        }
+                    break;
+                }   
             }
         }
-        
     }
 }
