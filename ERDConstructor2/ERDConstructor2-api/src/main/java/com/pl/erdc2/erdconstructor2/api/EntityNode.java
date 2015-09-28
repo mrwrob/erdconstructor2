@@ -3,9 +3,9 @@ package com.pl.erdc2.erdconstructor2.api;
 import java.awt.Image;
 import java.beans.IntrospectionException;
 
- import java.util.ArrayList;
- import javax.swing.AbstractAction;
- import javax.swing.Action;
+import java.util.ArrayList;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import java.util.Observable;
 import java.util.Observer;
 import org.openide.nodes.BeanNode;
