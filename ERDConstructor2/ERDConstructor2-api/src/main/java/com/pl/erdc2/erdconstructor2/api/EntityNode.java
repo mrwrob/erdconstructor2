@@ -21,7 +21,7 @@ import org.openide.util.lookup.Lookups;
     "EntityDefaultName=Entity {0}"
 })
 
- public class EntityNode extends BeanNode<Entity>  implements Observer{  
+public class EntityNode extends BeanNode<Entity>  implements Observer{  
     public EntityNode(Entity bean) throws IntrospectionException {
         super(bean, Children.LEAF, Lookups.singleton(bean));
         if(bean.getId()==0){
