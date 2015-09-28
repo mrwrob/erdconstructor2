@@ -63,7 +63,7 @@ public class EntityNode extends BeanNode<Entity>  implements Observer{
     
     @Override
     public void update(Observable o, Object arg) {
-     /*   if(!(o instanceof Entity))
+        if(!(o instanceof Entity))
             return;
         
         Entity col = (Entity)o;
@@ -72,6 +72,6 @@ public class EntityNode extends BeanNode<Entity>  implements Observer{
             String old = this.getDisplayName();
             this.setDisplayName(col.getName());
             this.fireDisplayNameChange(old, col.getName());
-        }*/
+        }
     }
 }
