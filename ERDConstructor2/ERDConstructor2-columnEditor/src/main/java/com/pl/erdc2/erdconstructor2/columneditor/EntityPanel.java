@@ -90,6 +90,12 @@ public class EntityPanel extends JPanel{
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx=0;
+        gbc.gridy = 2;
+        add(addButton, gbc);
+        gbc.gridx=1;
+        gbc.gridy=2;
+        add(removeButton,gbc);
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(entityLablel, gbc);
@@ -98,18 +104,14 @@ public class EntityPanel extends JPanel{
         gbc.gridx = 1;
         add(nameField, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(addButton, gbc);
-        gbc.gridx=1;
-        gbc.gridy=2;
-        add(removeButton,gbc);
-        gbc.gridx=0;
         gbc.gridy = 3;
         gbc.gridwidth=2;
         gbc.gridheight=13;
         gbc.weighty=10;
         gbc.fill = GridBagConstraints.BOTH;
         add(tablePanel, gbc);
+        
+        
     }
     
     private void addNewColumn(){
