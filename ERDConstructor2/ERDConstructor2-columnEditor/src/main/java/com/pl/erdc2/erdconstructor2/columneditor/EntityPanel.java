@@ -181,9 +181,13 @@ public class EntityPanel extends JPanel{
         if(selectedNode==null)
             return;
         
+        table.getSelectionModel().clearSelection();
+        if(table.isEditing())
+            table.getCellEditor().stopCellEditing();
         ColumnTableItemModel model = (ColumnTableItemModel) table.getModel();
         model.clear();
-
+        
+        
         for(Node n : selectedNode.getChildren().getNodes()){
             Column col = n.getLookup().lookup(Column.class);
             if(col!=null)
@@ -194,5 +198,10 @@ public class EntityPanel extends JPanel{
         nameField.setText(selectedNode.getDisplayName());
         descriptionField.setText(selectedNode.getLookup().lookup(Entity.class).getDescription());
         model.fireTableDataChanged();
+    }
+    
+    public void endEdititng(){
+        if(table.isEditing())
+            table.getCellEditor().stopCellEditing();
     }
 }
