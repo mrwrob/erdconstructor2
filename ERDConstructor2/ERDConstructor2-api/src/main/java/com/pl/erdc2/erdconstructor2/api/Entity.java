@@ -5,9 +5,10 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 
-public class Entity implements Serializable{
+public class Entity extends Observable  implements Serializable{
     private int id;
     private String name;
     private String description;
@@ -23,6 +24,8 @@ public class Entity implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+        setChanged();
+        notifyObservers("name");
     }
 
     public String getDescription() {
