@@ -128,37 +128,43 @@ public class RelationshipWidget extends ConnectionWidget implements Observer{
 
     public void updateControlPointPosition(){
         Point p = new Point();
-        Rectangle a = getSourceAnchor().getRelatedWidget().convertLocalToScene(this.getSourceAnchor().getRelatedWidget().getBounds());
-        Rectangle b = getTargetAnchor().getRelatedWidget().convertLocalToScene(this.getTargetAnchor().getRelatedWidget().getBounds());
-        
-        if(a.y > b.y){
-            Rectangle t = b;
-            b=a;
-            a=t;
+        if(isSelfRelationship()){
+            Rectangle a = getSourceAnchor().getRelatedWidget().convertLocalToScene(this.getSourceAnchor().getRelatedWidget().getBounds());
+            p.x = a.x + a.width/2;
+            p.y = a.y + a.height + 30;
         }
-        if(a.y+a.height>=b.y){
-            if(a.y+a.height>=b.y+b.height)
-                p.y=b.y+ (b.height)/2;
+        else{
+            Rectangle a = getSourceAnchor().getRelatedWidget().convertLocalToScene(this.getSourceAnchor().getRelatedWidget().getBounds());
+            Rectangle b = getTargetAnchor().getRelatedWidget().convertLocalToScene(this.getTargetAnchor().getRelatedWidget().getBounds());
+
+            if(a.y > b.y){
+                Rectangle t = b;
+                b=a;
+                a=t;
+            }
+            if(a.y+a.height>=b.y){
+                if(a.y+a.height>=b.y+b.height)
+                    p.y=b.y+ (b.height)/2;
+                else
+                    p.y = a.y+a.height - (a.y+a.height-b.y)/2;
+            }
             else
-                p.y = a.y+a.height - (a.y+a.height-b.y)/2;
-        }
-        else
-            p.y = a.y+a.height + (b.y - (a.y+a.height))/2;
-        
-        if(a.x > b.x){
-            Rectangle t = b;
-            b=a;
-            a=t;
-        }
-        if(a.x+a.width>=b.x){
-            if(a.x+a.width>=b.x+b.width)
-                p.x=b.x + b.width/2;
+                p.y = a.y+a.height + (b.y - (a.y+a.height))/2;
+
+            if(a.x > b.x){
+                Rectangle t = b;
+                b=a;
+                a=t;
+            }
+            if(a.x+a.width>=b.x){
+                if(a.x+a.width>=b.x+b.width)
+                    p.x=b.x + b.width/2;
+                else
+                    p.x = a.x+a.width - (a.x+a.width-b.x)/2;
+            }
             else
-                p.x = a.x+a.width - (a.x+a.width-b.x)/2;
+                p.x = a.x+a.width +  (b.x - (a.x+a.width))/2;
         }
-        else
-            p.x = a.x+a.width +  (b.x - (a.x+a.width))/2;
-        
         point.setMoved(false);
         point.setPreferredLocation(p);
         point.revalidate();
@@ -198,5 +204,9 @@ public class RelationshipWidget extends ConnectionWidget implements Observer{
         this.getScene().repaint();
         ((GraphSceneImpl)this.getScene()).getAssociatedTopComponent().repaint();
         
+    }
+    
+    public boolean isSelfRelationship(){
+        return this.getSourceAnchor().getRelatedWidget() == this.getTargetAnchor().getRelatedWidget();
     }
 }

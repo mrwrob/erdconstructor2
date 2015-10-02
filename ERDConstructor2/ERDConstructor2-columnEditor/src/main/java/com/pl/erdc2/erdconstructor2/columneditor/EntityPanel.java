@@ -2,6 +2,7 @@ package com.pl.erdc2.erdconstructor2.columneditor;
 
 import com.pl.erdc2.erdconstructor2.api.Column;
 import com.pl.erdc2.erdconstructor2.api.ColumnNode;
+import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -20,8 +21,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -31,11 +37,14 @@ public class EntityPanel extends JPanel{
     JTable table;
     JLabel entityLablel;
     JLabel nameLablel;
-    JLabel nameField;
+    JLabel descriptionLabel;
+    JTextField nameField;
+    JTextArea descriptionField;
     JScrollPane tablePanel;
     JButton addButton;
     JButton removeButton;
     EntityNode selectedNode = null;
+    private static final Logger logger = Logger.getLogger(EntityPanel.class);
 
     public EntityPanel() {
         setName(Bundle.CTL_ColumnEditorTopComponent());
@@ -60,8 +69,40 @@ public class EntityPanel extends JPanel{
         entityLablel.setFont(new Font("Calibri", Font.PLAIN, 24));
         nameLablel = new JLabel(Bundle.Name());
         nameLablel.setFont(new Font("Calibri", Font.BOLD, 17));
-        nameField = new JLabel();
-        nameField.setFont(new Font("Calibri", Font.PLAIN, 17));
+        nameField = new JTextField();
+        descriptionLabel = new JLabel(Bundle.Description());
+        descriptionLabel.setFont(new Font("Calibri", Font.BOLD, 17));
+        descriptionField = new JTextArea();
+        nameField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeName();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeName();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e){
+                changeName();
+            }
+        });
+        descriptionField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeDesc();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeDesc();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e){
+                changeDesc();
+            }
+        });
+        
+        
         
         addButton = new JButton();
         addButton.setEnabled(false);
@@ -101,10 +142,21 @@ public class EntityPanel extends JPanel{
         add(entityLablel, gbc);
         gbc.gridy = 1;
         add(nameLablel, gbc);
-        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(nameField, gbc);
         gbc.gridx = 0;
         gbc.gridy = 3;
+        add(descriptionLabel, gbc);
+        gbc.gridy = 4; 
+        gbc.insets = new Insets(5,15,20,15);
+        gbc.fill = GridBagConstraints.BOTH;
+        add(descriptionField, gbc);
+        gbc.insets = new Insets(5,15,0,15);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = 5;
+        add(addButton, gbc);
+        gbc.gridy = 6;
         gbc.gridwidth=2;
         gbc.gridheight=13;
         gbc.weighty=10;
@@ -112,6 +164,24 @@ public class EntityPanel extends JPanel{
         add(tablePanel, gbc);
         
         
+    }
+    
+    private void changeName(){
+        if(selectedNode==null)
+            return;
+        Entity  en = selectedNode.getLookup().lookup(Entity.class);
+        if(en==null)
+            return;
+        en.setName(nameField.getText());
+    }
+    
+    private void changeDesc(){
+        if(selectedNode==null)
+            return;
+        Entity en = selectedNode.getLookup().lookup(Entity.class);
+        if(en==null)
+            return;
+        en.setDescription(descriptionField.getText());
     }
     
     private void addNewColumn(){
@@ -126,6 +196,7 @@ public class EntityPanel extends JPanel{
             selectedNode.getChildren().add(nodesAdd);
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);
+            logger.error(ex);
         }
         updateTable();                
     }
@@ -154,9 +225,13 @@ public class EntityPanel extends JPanel{
         if(selectedNode==null)
             return;
         
+        table.getSelectionModel().clearSelection();
+        if(table.isEditing())
+            table.getCellEditor().stopCellEditing();
         ColumnTableItemModel model = (ColumnTableItemModel) table.getModel();
         model.clear();
-
+        
+        
         for(Node n : selectedNode.getChildren().getNodes()){
             Column col = n.getLookup().lookup(Column.class);
             if(col!=null)
@@ -168,6 +243,12 @@ public class EntityPanel extends JPanel{
             removeButton.setEnabled(false);
         addButton.setEnabled(true);
         nameField.setText(selectedNode.getDisplayName());
+        descriptionField.setText(selectedNode.getLookup().lookup(Entity.class).getDescription());
         model.fireTableDataChanged();
+    }
+    
+    public void endEdititng(){
+        if(table.isEditing())
+            table.getCellEditor().stopCellEditing();
     }
 }
