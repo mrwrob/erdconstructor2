@@ -68,8 +68,7 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
     
     public class ContextMenuItem extends AbstractAction{
 
-        public ContextMenuItem()
-        {
+        public ContextMenuItem(){
             putValue(NAME, Bundle.Delete());
         }
          
@@ -79,20 +78,16 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
             int op=0;
             if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
                 op=1;
-            switch(op)
-            {
-                case 1: 
+            switch(op){
+               
+                case 1:  System.out.println("sdfdfg");
                     for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){                  
-                    if(n instanceof EntityNode)
-                    {
+                    if(n instanceof EntityNode){
                        Node nod[]=n.getChildren().getNodes();
-                       for(Node no:nod)
-                       {
-                           if(no instanceof ColumnNode)
-                           {
+                       for(Node no:nod){
+                           if(no instanceof ColumnNode){
                                Column c=no.getLookup().lookup(Column.class);
-                               if(c.getId()==col.getId())
-                               {
+                               if(c.getId()==col.getId()){
                                    System.out.println(c.getId());
                                    Node toRemove[]={no};
                                    n.getChildren().remove(toRemove);
@@ -101,8 +96,9 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
                            }
                        } 
                     }
-                    break;
-                }   
+                    
+                }  
+                break;
             }
         }
     }
