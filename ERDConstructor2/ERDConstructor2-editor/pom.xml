@@ -97,6 +97,18 @@
             <artifactId>org-netbeans-core-multiview</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.13</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
