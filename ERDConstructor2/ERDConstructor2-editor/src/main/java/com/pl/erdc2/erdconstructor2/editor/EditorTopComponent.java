@@ -1,9 +1,7 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
-import com.pl.erdc2.erdconstructor2.api.ColumnChildFactory;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
-import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -11,16 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
 import javax.swing.ImageIcon;
-import javax.swing.JToggleButton;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerUtils;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -58,6 +54,7 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     private GraphSceneImpl scene;
     JToggleButton addRelationshipMode;
     JToggleButton addEntityButton;
+    JButton pointerButton;
     
     public EditorTopComponent() {
         initComponents();
@@ -73,6 +70,22 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         shapePane.setViewportView(scene.createView());
         
         JToolBar toolbar = new JToolBar();
+        
+        Image pointerImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/pointerButton.png");
+        pointerButton  = new JButton("", new ImageIcon(pointerImage));
+        pointerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    pointerButtonActionPerformed(evt);
+                } catch (IntrospectionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        });
+        toolbar.add(pointerButton);
+        toolbar.addSeparator();
+        
         
         Image addEntityImage = ImageUtilities.loadImage("com/pl/erdc2/erdconstructor2/editor/addEntityIcon.png");
         addEntityButton = new JToggleButton("", new ImageIcon(addEntityImage));
@@ -168,6 +181,18 @@ public final class EditorTopComponent extends TopComponent implements LookupList
         }
         scene.toggleAddEntityMode();
     } 
+    
+    private void pointerButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
+        if(addRelationshipMode.isSelected()){
+            addRelationshipMode.setSelected(false);
+            scene.setAddRelationshipMode(false);
+        }
+        if(addEntityButton.isSelected()){
+            addEntityButton.setSelected(false);
+            scene.setAddEntityMode(false);
+        }
+    } 
+    
     private void addRelationshipModeButtonActionPerformed(ActionEvent evt) throws IntrospectionException {
         if(addEntityButton.isSelected()){
             addEntityButton.setSelected(false);
