@@ -89,15 +89,12 @@ public class RelationshipNode extends BeanNode<Relationship> implements Observer
             int op = 0;
             if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
                 op=1;
-            switch(op)
-            {
+            switch(op){
                 case 1: 
                     Node nodes[] = EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes();
-                    for(Node n:nodes)
-                    {
+                    for(Node n:nodes){
                         rel2 = n.getLookup().lookup(Relationship.class);
-                        if(rel.getId()==rel2.getId())
-                        {
+                        if(rel.getId()==rel2.getId()) {
                             Node nodesToRemove[]={n};
                             EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(nodesToRemove);
                             break;

@@ -17,7 +17,7 @@ import org.openide.util.lookup.Lookups;
 
 
  @Messages({
-    "Delete=Delete"
+    "ColumnDelete=Delete"
  })
 
 public class ColumnNode  extends BeanNode<Column> implements Observer{
@@ -69,14 +69,14 @@ public class ColumnNode  extends BeanNode<Column> implements Observer{
     public class ContextMenuItem extends AbstractAction{
 
         public ContextMenuItem(){
-            putValue(NAME, Bundle.Delete());
+            putValue(NAME, Bundle.ColumnDelete());
         }
          
         @Override
         public void actionPerformed(ActionEvent e) {
             Column col = getLookup().lookup(Column.class);
             int op=0;
-            if(e.getActionCommand().equalsIgnoreCase(Bundle.Delete()))
+            if(e.getActionCommand().equalsIgnoreCase(Bundle.ColumnDelete()))
                 op=1;
             switch(op){
                

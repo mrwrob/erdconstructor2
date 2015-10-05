@@ -13,8 +13,7 @@ public class Column extends Observable implements Serializable{
     private String type;
     public static int availableId=1;
     
-    public Column()
-    {
+    public Column(){
         id=availableId++;
     }
     
