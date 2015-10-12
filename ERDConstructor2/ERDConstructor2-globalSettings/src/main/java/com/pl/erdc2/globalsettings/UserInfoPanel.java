@@ -10,7 +10,7 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
-final class UserInfoPanel extends javax.swing.JPanel {
+final public class UserInfoPanel extends javax.swing.JPanel {
 
     private final UserInfoOptionsPanelController controller;
 

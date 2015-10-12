@@ -104,10 +104,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.9</version>
-            <type>jar</type>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ERDConstructor2-globalSettings</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>
