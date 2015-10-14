@@ -11,6 +11,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,6 +42,7 @@ public class EntityPanel extends JPanel{
     JTextArea descriptionField;
     JScrollPane tablePanel;
     JButton addButton;
+    JButton removeButton;
     EntityNode selectedNode = null;
     private static final Logger logger = Logger.getLogger(EntityPanel.class);
 
@@ -110,12 +114,29 @@ public class EntityPanel extends JPanel{
             }
         });
         
+        removeButton = new JButton();
+        removeButton.setEnabled(false);
+        removeButton.setText(Bundle.Remove_Column_Button());
+        removeButton.addActionListener(new ActionListener(){
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeColumn();
+            }
+        });
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5,15,0,15);
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx=0;
+        gbc.gridy = 2;
+        add(addButton, gbc);
+        gbc.gridx=1;
+        gbc.gridy=2;
+        add(removeButton,gbc);
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(entityLablel, gbc);
@@ -141,6 +162,8 @@ public class EntityPanel extends JPanel{
         gbc.weighty=10;
         gbc.fill = GridBagConstraints.BOTH;
         add(tablePanel, gbc);
+        
+        
     }
     
     private void changeName(){
@@ -168,6 +191,7 @@ public class EntityPanel extends JPanel{
         Column toAdd = new Column();
         try {
             ColumnNode cn = new ColumnNode(toAdd);
+            cn.addNodeListener(new ColumnNodeListener(this));
             Node[] nodesAdd = {cn};
             selectedNode.getChildren().add(nodesAdd);
         } catch (IntrospectionException ex) {
@@ -175,6 +199,26 @@ public class EntityPanel extends JPanel{
             logger.error(ex);
         }
         updateTable();                
+    }
+    
+    private void removeColumn(){
+        if(selectedNode==null)
+            return;
+        if(table.getSelectedRows().length==0)
+            return;
+        int[] selRows=table.getSelectedRows();
+        Node[] nodes;
+        nodes= new Node[table.getSelectedRowCount()];
+        List<Node> nodess = new LinkedList<Node>();
+        int j=0;
+        for(int i:selRows)
+        {
+            System.out.println(i);
+            Node n=selectedNode.getChildren().getNodeAt(i);
+            nodes[j++]=n;
+        }
+        selectedNode.getChildren().remove(nodes);
+        updateTable();
     }
     
     public void updateTable(){
@@ -193,7 +237,10 @@ public class EntityPanel extends JPanel{
             if(col!=null)
                 model.add(col);
         }
-        
+        if(selectedNode.getChildren().getNodes().length>0)
+            removeButton.setEnabled(true);
+        else
+            removeButton.setEnabled(false);
         addButton.setEnabled(true);
         nameField.setText(selectedNode.getDisplayName());
         descriptionField.setText(selectedNode.getLookup().lookup(Entity.class).getDescription());
