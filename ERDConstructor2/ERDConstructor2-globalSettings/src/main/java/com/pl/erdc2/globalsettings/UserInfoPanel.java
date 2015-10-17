@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pl.erdc2.globalsettings;
 
 import java.util.prefs.PreferenceChangeEvent;
@@ -10,7 +5,7 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
-final class UserInfoPanel extends javax.swing.JPanel {
+final public class UserInfoPanel extends javax.swing.JPanel {
 
     private final UserInfoOptionsPanelController controller;
 
