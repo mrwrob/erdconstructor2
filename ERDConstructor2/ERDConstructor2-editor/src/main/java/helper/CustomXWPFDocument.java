@@ -15,6 +15,9 @@ import java.io.InputStream;
 /**
  *
  * @author Piotrek
+ * klasa pochodzi ze znalezionego w inernecie obejścia bugu przy dodawaniu obrazka do dokumentu
+ * więcej szczegółów tutaj:
+ * https://bz.apache.org/bugzilla/show_bug.cgi?id=49765#c37
  */
 public class CustomXWPFDocument extends XWPFDocument{
     public CustomXWPFDocument() throws IOException {
