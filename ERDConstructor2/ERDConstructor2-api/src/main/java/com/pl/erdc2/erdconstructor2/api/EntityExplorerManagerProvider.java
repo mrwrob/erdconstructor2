@@ -59,6 +59,15 @@ public class EntityExplorerManagerProvider{
         em.getRootContext().getChildren().add(nodes);
     }
     
+    public static Entity getEntityById(int id){
+        for(Node n: entityNodeRoot.getChildren().getNodes()){
+            Entity en = n.getLookup().lookup(Entity.class);
+            if(en!=null && en.getId()==id)
+                return en;
+        }
+        return null;
+    }
+    
     public static void clean(){
        entityNodeRoot.getChildren().remove(entityNodeRoot.getChildren().getNodes());
        relatioshipNodeRoot.getChildren().remove(relatioshipNodeRoot.getChildren().getNodes());
