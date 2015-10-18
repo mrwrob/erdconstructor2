@@ -39,7 +39,7 @@ import org.openide.util.Utilities;
     "HINT_ColumnEditorTopComponent=This is a properties editor window",
     "Add_Column_Button=New column",
     "Remove_Column_Button=Remove column",
-    "Relationship=Relatioship",
+    "Relationship=Relationship",
     "Entity=Entity",
     "Name=Name",
     "Description=Description",

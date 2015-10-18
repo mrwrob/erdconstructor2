@@ -58,7 +58,6 @@ public class EntityWidget extends Widget implements Observer{
     private final Font CALIBRI;
     private final static Stroke BASIC_STROKE=new BasicStroke(1);
     private final static Stroke STROKE_2PX=new BasicStroke(2);
-    private final static String ENTITY_DEFAULT_NAME="Entity";
  
     
     @Override
@@ -66,7 +65,7 @@ public class EntityWidget extends Widget implements Observer{
         final Graphics2D g2 = getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         final Rectangle bounds = getClientArea();
-        String s = bean.getDisplayName().length()>0 ? bean.getDisplayName() : ENTITY_DEFAULT_NAME;
+        String s = bean.getDisplayName().length()>0 ? bean.getDisplayName() : Bundle.Entity();
         
         if(this.isEnabled()){
             g2.setColor(ENTITY_BACKGROUND);
