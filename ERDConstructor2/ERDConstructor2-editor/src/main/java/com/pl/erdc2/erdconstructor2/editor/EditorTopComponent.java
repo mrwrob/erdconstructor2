@@ -48,7 +48,8 @@ import org.openide.util.Utilities;
 @Messages({
     "CTL_editorAction=Diagram editor",
     "CTL_editorTopComponent=Diagram editor",
-    "HINT_editorTopComponent=This is a erd diagram editor window"
+    "HINT_editorTopComponent=This is a erd diagram editor window",
+    "Entity=Entity"
 })
 public final class EditorTopComponent extends TopComponent implements LookupListener{
     private GraphSceneImpl scene;
