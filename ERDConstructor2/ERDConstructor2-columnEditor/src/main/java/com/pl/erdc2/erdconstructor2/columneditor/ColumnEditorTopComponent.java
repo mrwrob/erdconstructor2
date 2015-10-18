@@ -53,6 +53,8 @@ public final class ColumnEditorTopComponent extends TopComponent  implements Loo
     
     public ColumnEditorTopComponent() {
         initComponents();
+        setName(Bundle.CTL_ColumnEditorTopComponent());
+        setToolTipText(Bundle.HINT_ColumnEditorTopComponent());
         setLayout(new BorderLayout());
         
         entityPanel = new EntityPanel();
