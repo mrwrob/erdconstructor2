@@ -58,6 +58,8 @@ public class EntityPanel extends JPanel{
         for(String s : Column.DATA_TYPES)
             comboBox.addItem(s);
         comboBox.setEditable(true);
+        table.getColumnModel().getColumn(0).setCellEditor(new MyCellEditor(new JTextField()));        
+        table.getColumnModel().getColumn(3).setCellEditor(new MyCellEditor(new JTextField()));
         table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
         table.getColumnModel().getColumn(1).setPreferredWidth(120);
         table.getColumnModel().getColumn(2).setPreferredWidth(30);
