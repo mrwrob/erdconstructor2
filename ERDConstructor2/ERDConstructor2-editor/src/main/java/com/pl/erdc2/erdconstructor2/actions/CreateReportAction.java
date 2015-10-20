@@ -47,7 +47,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 @ActionRegistration(displayName = "#CTL_CreateReportAction")
 @ActionReference(path = "Menu/File", position = 14)
 @NbBundle.Messages({"CTL_CreateReportAction=Create report",
-        "NameAndSurname=Imię i nazwisko"})
+        "NameAndSurname=Imię i nazwisko",
+        "Confirm_Replace_File=Czy na pewno chcesz nadpisać plik?",
+        "Confirm=Potwierdzenie",
+        "Yes_Option=Tak",
+        "No_Option=Nie"})
+
 public class CreateReportAction implements ActionListener{
     
     private static final Logger logger = Logger.getLogger(CreateReportAction.class);
@@ -222,9 +227,11 @@ public class CreateReportAction implements ActionListener{
             
                     
             String dictionaryPath = dictionaryPath();
-            FileOutputStream out = new FileOutputStream(dictionaryPath);
-            doc.write(out);
-            out.close();
+            if(dictionaryPath != null){
+                FileOutputStream out = new FileOutputStream(dictionaryPath);            
+                doc.write(out);
+                out.close();
+            }                        
             
         }catch(IOException | InvalidFormatException ex){
             JOptionPane.showMessageDialog(null, ex);
@@ -259,12 +266,30 @@ public class CreateReportAction implements ActionListener{
                 return "Word Document (.docx)";
             }
         });
-        
-        chooser.showSaveDialog(chooser);
-        String fullPath = chooser.getSelectedFile().getAbsolutePath();
-        if(!fullPath.endsWith(".docx")){
-            return fullPath + ".docx";
+                
+        while(true){            
+            int chooserResponse = chooser.showSaveDialog(chooser);            
+            if(chooserResponse == JFileChooser.CANCEL_OPTION){
+                return null;
+            }
+            
+            String fullPath = chooser.getSelectedFile().getAbsolutePath();            
+            if(!fullPath.endsWith(".docx")){
+                return fullPath + ".docx";
+            }
+   
+            File testFile = new File(fullPath);
+            if(testFile.exists()){
+                int response = JOptionPane.showOptionDialog(null,
+                        (Object) Bundle.Confirm_Replace_File(), 
+                        Bundle.Confirm(), JOptionPane.YES_NO_OPTION, 
+                        JOptionPane.INFORMATION_MESSAGE, null, 
+                        new String[]{Bundle.Yes_Option(), Bundle.No_Option()}, "default");
+                if (response == JOptionPane.YES_OPTION) {
+                    System.out.println("aa");
+                    return fullPath;
+                } 
+            }
         }
-        return fullPath;
     }
 }
