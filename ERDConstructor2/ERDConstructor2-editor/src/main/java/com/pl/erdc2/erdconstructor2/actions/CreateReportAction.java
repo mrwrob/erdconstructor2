@@ -64,6 +64,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 public class CreateReportAction implements ActionListener{
     
     private static final Logger logger = Logger.getLogger(CreateReportAction.class);
+    private static final String HEADER_FONT="Cambria";
+    private static final String MAIN_FONT="Calibri";
     
     public CreateReportAction(){
         BasicConfigurator.configure();
@@ -85,7 +87,7 @@ public class CreateReportAction implements ActionListener{
             r1.setFontSize(14);
             String name = userSettings.getFirstName() + " " + userSettings.getLastName();
             r1.setText(name.trim().equals("") ? Bundle.NameAndSurname() : name);
-            r1.setFontFamily("Calibri");
+            r1.setFontFamily(MAIN_FONT);
             r1.addCarriageReturn();
             r1.setBold(true);
             r1.setText("Indeks: " + userSettings.getIndexNo());
@@ -97,8 +99,8 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r2 = p2.createRun();
             r2.setFontSize(17);
             r2.setBold(true);
-            r2.setUnderline(UnderlinePatterns.WORDS);
-            r2.setFontFamily("Cambria");
+            r2.setUnderline(UnderlinePatterns.SINGLE);
+            r2.setFontFamily(HEADER_FONT);
             r2.setText("Temat projektu");
             r2.addCarriageReturn();
             r2.addCarriageReturn();
@@ -109,8 +111,8 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r4 = p3.createRun();
             r4.setFontSize(17);
             r4.setBold(true);
-            r4.setUnderline(UnderlinePatterns.WORDS);
-            r4.setFontFamily("Cambria");
+            r4.setUnderline(UnderlinePatterns.SINGLE);
+            r4.setFontFamily(HEADER_FONT);
             r4.setText("Szczegółowy opis projektu");
             r4.addCarriageReturn();
             r4.addCarriageReturn();
@@ -119,7 +121,7 @@ public class CreateReportAction implements ActionListener{
             r5.setFontSize(12);
             r5.setText("Szczegółowy opis twojego projektu ...");
             r5.addCarriageReturn();
-            r5.setFontFamily("Calibri");
+            r5.setFontFamily(MAIN_FONT);
 
             XWPFParagraph p4 = doc.createParagraph();
             p4.setPageBreak(true);
@@ -127,8 +129,8 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r6 = p4.createRun();
             r6.setFontSize(20);
             r6.setBold(true);
-            r6.setUnderline(UnderlinePatterns.WORDS);
-            r6.setFontFamily("Cambria");
+            r6.setUnderline(UnderlinePatterns.SINGLE);
+            r6.setFontFamily(HEADER_FONT);
             r6.setText("Diagram ERD");      
             r6.addBreak();
 
@@ -154,9 +156,9 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r8 = p5.createRun();
             r8.setFontSize(20);
             r8.setBold(true);
-            r8.setUnderline(UnderlinePatterns.WORDS);
+            r8.setUnderline(UnderlinePatterns.SINGLE);
             r8.setText("Opis zbioru encji");
-            r8.setFontFamily("Cambria");
+            r8.setFontFamily(HEADER_FONT);
             r8.addBreak();
 
             for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
@@ -177,7 +179,7 @@ public class CreateReportAction implements ActionListener{
                 r.setFontSize(14);
                 r.setBold(true);
                 r.setText(ent.getName());
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 tableRow1.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
 
@@ -185,7 +187,7 @@ public class CreateReportAction implements ActionListener{
                 p = tableRow2.getCell(0).getParagraphs().get(0);
                 p.setAlignment(ParagraphAlignment.CENTER);
                 r = p.createRun();
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 r.setText((ent.getDescription()==null ? "Opis encji" : ent.getDescription()));
 
 
@@ -194,28 +196,28 @@ public class CreateReportAction implements ActionListener{
                 p.setAlignment(ParagraphAlignment.CENTER);
                 r = p.createRun();
                 r.setBold(true);
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 r.setText("Nazwa");
 
                 p = tableRow3.addNewTableCell().getParagraphs().get(0);
                 p.setAlignment(ParagraphAlignment.CENTER);
                 r = p.createRun();
                 r.setBold(true);
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 r.setText("Klucz główny");
 
                 p = tableRow3.addNewTableCell().getParagraphs().get(0);
                 p.setAlignment(ParagraphAlignment.CENTER);
                 r = p.createRun();
                 r.setBold(true);
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 r.setText("Typ/dziedzina");
 
                 p = tableRow3.addNewTableCell().getParagraphs().get(0);
                 p.setAlignment(ParagraphAlignment.CENTER);
                 r = p.createRun();
                 r.setBold(true);
-                r.setFontFamily("Calibri");
+                r.setFontFamily(MAIN_FONT);
                 r.setText("Opis");
 
                 spanCellsAcrossRow(table, 0, 0, 4);
@@ -228,13 +230,13 @@ public class CreateReportAction implements ActionListener{
                     p = tableRowA.getCell(0).getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(c.getName()==null ? "" : c.getName());
 
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     if(c.isPrimary())
                         r.setBold(true);
                     r.setText(c.isPrimary() ? "Tak" : "Nie");
@@ -242,13 +244,13 @@ public class CreateReportAction implements ActionListener{
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(c.getType()==null ? "" : c.getType());
 
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(c.getDescription());
 
                 }
@@ -262,9 +264,9 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r12 = p8.createRun();
             r12.setFontSize(20);
             r12.setBold(true);
-            r12.setUnderline(UnderlinePatterns.WORDS);
+            r12.setUnderline(UnderlinePatterns.SINGLE);
             r12.setText("Opis związków");
-            r12.setFontFamily("Cambria");
+            r12.setFontFamily(HEADER_FONT);
             r12.addCarriageReturn();
             
             XWPFTable table = doc.createTable();
@@ -283,35 +285,35 @@ public class CreateReportAction implements ActionListener{
             p.setAlignment(ParagraphAlignment.CENTER);
             r = p.createRun();
             r.setBold(true);
-            r.setFontFamily("Calibri");
+            r.setFontFamily(MAIN_FONT);
             r.setText("Nazwa związku");
 
             p = tableRow.addNewTableCell().getParagraphs().get(0);
             p.setAlignment(ParagraphAlignment.CENTER);
             r = p.createRun();
             r.setBold(true);
-            r.setFontFamily("Calibri");
+            r.setFontFamily(MAIN_FONT);
             r.setText("Zbiór encji 1");
 
             p = tableRow.addNewTableCell().getParagraphs().get(0);
             p.setAlignment(ParagraphAlignment.CENTER);
             r = p.createRun();
             r.setBold(true);
-            r.setFontFamily("Calibri");
+            r.setFontFamily(MAIN_FONT);
             r.setText("Zbiór encji 2");
 
             p = tableRow.addNewTableCell().getParagraphs().get(0);
             p.setAlignment(ParagraphAlignment.CENTER);
             r = p.createRun();
             r.setBold(true);
-            r.setFontFamily("Calibri");
+            r.setFontFamily(MAIN_FONT);
             r.setText("Liczność związku");
             
             p = tableRow.addNewTableCell().getParagraphs().get(0);
             p.setAlignment(ParagraphAlignment.CENTER);
             r = p.createRun();
             r.setBold(true);
-            r.setFontFamily("Calibri");
+            r.setFontFamily(MAIN_FONT);
             r.setText("Opis");
             
             for(Node n : EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes()){
@@ -321,33 +323,33 @@ public class CreateReportAction implements ActionListener{
                     p = tableRowA.getCell(0).getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(rel.getName());
 
                     Entity e1 = EntityExplorerManagerProvider.getEntityById(rel.getSourceEntityId());
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(e1.getName());
 
                     Entity e2 = EntityExplorerManagerProvider.getEntityById(rel.getDestinationEntityId());
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(e2.getName());
 
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(rel.getSourceType()+" : "+rel.getDestinationType());
                     
                     p = tableRowA.addNewTableCell().getParagraphs().get(0);
                     p.setAlignment(ParagraphAlignment.CENTER);
                     r = p.createRun();
-                    r.setFontFamily("Calibri");
+                    r.setFontFamily(MAIN_FONT);
                     r.setText(rel.getDescription()==null ? "" : rel.getDescription());
             }
             
@@ -359,8 +361,8 @@ public class CreateReportAction implements ActionListener{
             XWPFRun r14 = p10.createRun();
             r14.setFontSize(20);
             r14.setBold(true);
-            r14.setUnderline(UnderlinePatterns.WORDS);
-            r14.setFontFamily("Cambria");
+            r14.setUnderline(UnderlinePatterns.SINGLE);
+            r14.setFontFamily(HEADER_FONT);
             r14.setText("Schemat relacyjnej bazy danych");
             
                     
