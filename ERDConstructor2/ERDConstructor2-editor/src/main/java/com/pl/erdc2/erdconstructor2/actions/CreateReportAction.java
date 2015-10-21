@@ -40,7 +40,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 /**
- *
+ * 
  * @author Piotr
  */
 @ActionID(category = "File", id = "com.pl.erdc2.CreateReportAction")
