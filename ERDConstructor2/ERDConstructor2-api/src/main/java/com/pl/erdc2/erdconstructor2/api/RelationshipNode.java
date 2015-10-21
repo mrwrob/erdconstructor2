@@ -17,7 +17,7 @@ import org.openide.util.lookup.Lookups;
 
 @Messages({
     "# {0} - relationship",
-    "RelationshipDefaultName=Relatioship {0}",
+    "RelationshipDefaultName=Relationship {0}",
     "Delete=Delete"
 })
 
