@@ -152,6 +152,11 @@ public final class EditorTopComponent extends TopComponent implements LookupList
     }
     
     @Override
+    public void componentActivated() {
+        scene.getView().requestFocusInWindow();
+    }
+    
+    @Override
     public void componentOpened() {
         entitesLookup = Utilities.actionsGlobalContext().lookupResult(Entity.class);
         entitesLookup.addLookupListener(this);

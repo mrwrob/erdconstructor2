@@ -23,6 +23,7 @@ import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.widget.EventProcessingType;
 import org.netbeans.api.visual.widget.LayerWidget;
 
 public class GraphSceneImpl extends GraphScene implements LookupListener, Serializable{
@@ -45,6 +46,8 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         connectionLayer = new LayerWidget(this);
         interactionLayer = new LayerWidget(this);
         
+        this.setKeyEventProcessingType(EventProcessingType.ALL_WIDGETS);
+        
         EntityExplorerManagerProvider.getEntityNodeRoot().addNodeListener(new EntityNodeRootNodeListener(this));
         EntityExplorerManagerProvider.getRelatioshipNodeRoot().addNodeListener(new RelationshipNodeRootNodeListener(this));
         
@@ -53,17 +56,19 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         relatioshipLookup = Utilities.actionsGlobalContext().lookupResult(RelationshipNode.class);
         relatioshipLookup.addLookupListener(this);
         
+        getActions().addAction(new MyKeyListener(this));
         getActions().addAction(new MyRelationshipAddModeAction());
         getActions().addAction(new MyEntityAddModeAction(this));
         
         addChild(connectionLayer);
         addChild(interactionLayer);
         addChild(mainLayer);
+
         getActions().addAction(ActionFactory.createZoomAction());
         getActions().addAction(ActionFactory.createPanAction());
         getActions().addAction(ActionFactory.createWheelPanAction());
         getActions().addAction(new MySelectWidgetAction());
-
+        
         for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
             if(n instanceof EntityNode){
                 this.addNode(n);
@@ -160,6 +165,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         else
             widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
         
+        widget.getActions().addAction(new MyKeyListener(this));
         widget.getActions().addAction(new MyRelationshipAddModeAction());
         widget.getActions().addAction(new MyEntityAddModeAction(this));
         widget.getActions().addAction(this.createWidgetHoverAction());
