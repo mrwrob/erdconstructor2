@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -33,16 +34,41 @@ import org.openide.windows.WindowManager;
 @ActionReference(path = "Menu/File", position = 9)
 @Messages({"CTL_SaveFileAction=Save File",
         "CTL_SaveFileActionButton=Save",
-        "Save_Error=An error occurred while attempting to save to your hard drive"
+        "Save_Error=An error occurred while attempting to save to your hard drive",
+        "Confirm_Replace_File=Are you sure you want to override existing file?",
+        "Confirm=Confirm",
+        "Yes_Option=Yes",
+        "No_Option=No"
 })
 public final class SaveFileAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         File home = new File(System.getProperty("user.home"));
         FileNameExtensionFilter filter1 = new FileNameExtensionFilter("ERDC files", "erdc");
-        File toAdd = new FileChooserBuilder("user-dir").setTitle(Bundle.CTL_SaveFileAction()).
-                setDefaultWorkingDirectory(home).setApproveText(Bundle.CTL_SaveFileActionButton()).setFileFilter(filter1).showSaveDialog();
-        if (toAdd != null) {            
+        File toAdd;
+        while(true){
+            toAdd = new FileChooserBuilder("user-dir").setTitle(Bundle.CTL_SaveFileAction()).
+                setDefaultWorkingDirectory(home).setApproveText(Bundle.CTL_SaveFileActionButton()).setFileFilter(filter1).showSaveDialog();            
+            if(toAdd == null){
+                return;
+            }
+            if(!toAdd.getAbsolutePath().endsWith(".erdc"))
+                   toAdd = new File(toAdd.getAbsolutePath()+".erdc");
+            if(toAdd.exists()){
+                int response = JOptionPane.showOptionDialog(null,
+                        (Object) Bundle.Confirm_Replace_File(), 
+                        Bundle.Confirm(), JOptionPane.YES_NO_OPTION, 
+                        JOptionPane.INFORMATION_MESSAGE, null, 
+                        new String[]{Bundle.Yes_Option(), Bundle.No_Option()}, "default");
+                if (response == JOptionPane.YES_OPTION) {                    
+                    break;
+                } 
+            } else {
+                break;
+            }
+        }        
+       
+        if (toAdd != null) {                                    
             try {
                 if(!toAdd.getAbsolutePath().endsWith(".erdc"))
                     toAdd = new File(toAdd.getAbsolutePath()+".erdc");
