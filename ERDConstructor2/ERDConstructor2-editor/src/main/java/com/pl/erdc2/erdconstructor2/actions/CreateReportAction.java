@@ -48,18 +48,14 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 /**
- *
+ * 
  * @author Piotr
  */
 @ActionID(category = "File", id = "com.pl.erdc2.CreateReportAction")
 @ActionRegistration(displayName = "#CTL_CreateReportAction")
 @ActionReference(path = "Menu/File", position = 14)
 @NbBundle.Messages({"CTL_CreateReportAction=Create report",
-        "NameAndSurname=Imię i nazwisko",
-        "Confirm_Replace_File=Czy na pewno chcesz nadpisać plik?",
-        "Confirm=Potwierdzenie",
-        "Yes_Option=Tak",
-        "No_Option=Nie"})
+        "NameAndSurname=Imię i nazwisko"})
 
 public class CreateReportAction implements ActionListener{
     
@@ -425,12 +421,14 @@ public class CreateReportAction implements ActionListener{
                         Bundle.Confirm(), JOptionPane.YES_NO_OPTION, 
                         JOptionPane.INFORMATION_MESSAGE, null, 
                         new String[]{Bundle.Yes_Option(), Bundle.No_Option()}, "default");
-                if (response == JOptionPane.YES_OPTION) {
-                    System.out.println("aa");
+                if (response == JOptionPane.YES_OPTION) {                    
                     return fullPath;
                 } 
-            }
+            } else {
+                return fullPath;
+            } 
         }
+        
     }
     
     private void spanCellsAcrossRow(XWPFTable table, int rowNum, int colNum, int span) {
