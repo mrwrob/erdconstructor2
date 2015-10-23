@@ -1,6 +1,7 @@
 package com.pl.erdc2.erdconstructor2.actions;
 
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import com.pl.erdc2.erdconstructor2.editor.EditorTopComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,5 +29,6 @@ public final class NewFileAction implements ActionListener {
         etc.getScene().revalidate();
         etc.getScene().repaint();
         etc.repaint();
+        FileChangesManager.newFile();
     }    
 }

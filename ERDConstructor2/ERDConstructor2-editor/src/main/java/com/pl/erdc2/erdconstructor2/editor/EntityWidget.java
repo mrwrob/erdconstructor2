@@ -4,7 +4,6 @@ import com.pl.erdc2.erdconstructor2.api.Column;
 import com.pl.erdc2.erdconstructor2.api.ColumnNode;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
-import com.pl.erdc2.erdconstructor2.api.Relationship;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;

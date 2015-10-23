@@ -2,6 +2,7 @@ package com.pl.erdc2.erdconstructor2.actions;
 
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.editor.EditorTopComponent;
 import java.awt.event.ActionEvent;
@@ -69,46 +70,53 @@ public final class SaveFileAction implements ActionListener {
         }        
        
         if (toAdd != null) {                                    
-            try {
-                if(!toAdd.getAbsolutePath().endsWith(".erdc"))
-                    toAdd = new File(toAdd.getAbsolutePath()+".erdc");
-                
-                if(!toAdd.exists())
-                    toAdd.createNewFile();
-                
-                FileOutputStream fout = new FileOutputStream(toAdd);
-                ObjectOutputStream oos = new ObjectOutputStream(fout);
-                
-                EditorTopComponent etc;
-                etc = (EditorTopComponent) WindowManager.getDefault().findTopComponent("editorTopComponent");
-                etc.getScene().prepareToSerialize();
-                
-                SaveWrapper wrap = new SaveWrapper();
-                ArrayList<Entity> entities = new ArrayList<>();
-                for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
-                    Entity ent = n.getLookup().lookup(Entity.class);
-                    if(ent!=null)
-                        entities.add(ent);
-                }
-                wrap.entities = entities.toArray(new Entity[entities.size()]);
-                
-                ArrayList<Relationship> relations = new ArrayList<>();
-                for(Node n : EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes()){
-                    Relationship rel = n.getLookup().lookup(Relationship.class);
-                    if(rel!=null)
-                        relations.add(rel);
-                }
-                wrap.relations = relations.toArray(new Relationship[relations.size()]);
-                oos.writeObject(wrap);
-                oos.close();
-                fout.close();
-            } catch (IOException ex) {
-                NotifyDescriptor.Message message = new NotifyDescriptor.Message(Bundle.Save_Error());
-                message.setMessageType(NotifyDescriptor.Message.ERROR_MESSAGE);
-                Object result = DialogDisplayer.getDefault().notify(message);
-                Exceptions.printStackTrace(ex);
-            }
+             saveFile(toAdd);
+        }
+    }
+    
+    public void saveFile(File toAdd){
+        try {
+            if(toAdd==null)
+                throw new IOException("File is null");
             
+            if(!toAdd.getAbsolutePath().endsWith(".erdc"))
+                toAdd = new File(toAdd.getAbsolutePath()+".erdc");
+
+            if(!toAdd.exists())
+                toAdd.createNewFile();
+
+            FileOutputStream fout = new FileOutputStream(toAdd);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+
+            EditorTopComponent etc;
+            etc = (EditorTopComponent) WindowManager.getDefault().findTopComponent("editorTopComponent");
+            etc.getScene().prepareToSerialize();
+
+            SaveWrapper wrap = new SaveWrapper();
+            ArrayList<Entity> entities = new ArrayList<>();
+            for(Node n : EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().getNodes()){
+                Entity ent = n.getLookup().lookup(Entity.class);
+                if(ent!=null)
+                    entities.add(ent);
+            }
+            wrap.entities = entities.toArray(new Entity[entities.size()]);
+
+            ArrayList<Relationship> relations = new ArrayList<>();
+            for(Node n : EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes()){
+                Relationship rel = n.getLookup().lookup(Relationship.class);
+                if(rel!=null)
+                    relations.add(rel);
+            }
+            wrap.relations = relations.toArray(new Relationship[relations.size()]);
+            oos.writeObject(wrap);
+            oos.close();
+            fout.close();
+            FileChangesManager.saveFile(toAdd.getName(), toAdd);
+        } catch (IOException ex) {
+            NotifyDescriptor.Message message = new NotifyDescriptor.Message(Bundle.Save_Error());
+            message.setMessageType(NotifyDescriptor.Message.ERROR_MESSAGE);
+            Object result = DialogDisplayer.getDefault().notify(message);
+            Exceptions.printStackTrace(ex);
         }
     }
     

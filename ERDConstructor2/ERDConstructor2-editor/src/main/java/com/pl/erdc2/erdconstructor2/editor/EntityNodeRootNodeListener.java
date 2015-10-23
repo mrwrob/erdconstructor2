@@ -1,6 +1,7 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeAdapter;
 import org.openide.nodes.NodeMemberEvent;
@@ -24,6 +25,7 @@ public class EntityNodeRootNodeListener extends NodeAdapter{
                 gs.validate();
             }
         }
+        FileChangesManager.change();
     }
     
     @Override
@@ -34,5 +36,6 @@ public class EntityNodeRootNodeListener extends NodeAdapter{
                 gs.validate();
             }
         }
+        FileChangesManager.change();
     }
 }

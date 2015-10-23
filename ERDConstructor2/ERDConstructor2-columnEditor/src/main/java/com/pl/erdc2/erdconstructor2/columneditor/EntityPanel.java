@@ -4,6 +4,7 @@ import com.pl.erdc2.erdconstructor2.api.Column;
 import com.pl.erdc2.erdconstructor2.api.ColumnNode;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,7 +12,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
@@ -191,6 +191,7 @@ public class EntityPanel extends JPanel{
         if(selectedNode==null)
             return;
         
+        FileChangesManager.change();
         Column toAdd = new Column();
         try {
             ColumnNode cn = new ColumnNode(toAdd);
@@ -209,6 +210,8 @@ public class EntityPanel extends JPanel{
             return;
         if(table.getSelectedRows().length==0)
             return;
+        
+        FileChangesManager.change();
         int[] selRows=table.getSelectedRows();
         Node[] nodes;
         nodes= new Node[table.getSelectedRowCount()];
@@ -227,6 +230,8 @@ public class EntityPanel extends JPanel{
     public void updateTable(){
         if(selectedNode==null)
             return;
+        
+        FileChangesManager.setSetupMode(true);
         
         table.getSelectionModel().clearSelection();
         if(table.isEditing())
@@ -248,6 +253,8 @@ public class EntityPanel extends JPanel{
         nameField.setText(selectedNode.getDisplayName());
         descriptionField.setText(selectedNode.getLookup().lookup(Entity.class).getDescription());
         model.fireTableDataChanged();
+        
+        FileChangesManager.setSetupMode(false);
     }
     
     public void endEdititng(){

@@ -33,6 +33,8 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setName(String name) {
+        if(!name.equals(this.name))
+            FileChangesManager.change();
         this.name = name;
         setChanged();
         notifyObservers("name");
@@ -43,6 +45,8 @@ public class Relationship extends Observable implements Serializable{
     }
 
     public void setDescription(String description) {
+        if(!description.equals(this.description))
+            FileChangesManager.change();
         this.description = description;
     }
 
@@ -55,6 +59,7 @@ public class Relationship extends Observable implements Serializable{
             this.sourceEntityId = sourceEntityId;
             setChanged();
             notifyObservers("sourceEntityId");
+            FileChangesManager.change();
         }
     }
 
@@ -67,6 +72,7 @@ public class Relationship extends Observable implements Serializable{
             this.destinationEntityId = destinationEntityId;
             setChanged();
             notifyObservers("destinationEntityId");
+            FileChangesManager.change();
         }
     }
 
@@ -111,6 +117,7 @@ public class Relationship extends Observable implements Serializable{
            this.sourceType = sourceType;
             setChanged();
             notifyObservers("sourceType");
+            FileChangesManager.change();
         }
     }
 
@@ -123,6 +130,7 @@ public class Relationship extends Observable implements Serializable{
             this.destinationType = destinationType;
             setChanged();
             notifyObservers("destinationType");
+            FileChangesManager.change();
         }
     }
     
