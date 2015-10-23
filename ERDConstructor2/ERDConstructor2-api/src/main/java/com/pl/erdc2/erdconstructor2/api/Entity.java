@@ -23,6 +23,8 @@ public class Entity extends Observable  implements Serializable{
     }
 
     public void setName(String name) {
+        if(name!=null && this.name!=null && !name.equals(this.name))
+            FileChangesManager.change();
         this.name = name;
         setChanged();
         notifyObservers("name");
@@ -33,6 +35,8 @@ public class Entity extends Observable  implements Serializable{
     }
 
     public void setDescription(String description) {
+        if(!description.equals(this.description))
+            FileChangesManager.change();
         this.description = description;
     }
 

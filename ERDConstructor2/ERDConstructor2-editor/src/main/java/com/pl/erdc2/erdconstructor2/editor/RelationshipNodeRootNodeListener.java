@@ -1,5 +1,6 @@
 package com.pl.erdc2.erdconstructor2.editor;
 
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import org.netbeans.api.visual.widget.Widget;
      
@@ -21,8 +22,7 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
     }
     
     @Override
-     public void childrenRemoved(NodeMemberEvent ev) 
-     {
+     public void childrenRemoved(NodeMemberEvent ev) {
          Widget toRemove = null;
          for(Node n : ev.getDelta()){
             if(n instanceof RelationshipNode){
@@ -40,6 +40,7 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
                 gs.validate();
             }
         }
+        FileChangesManager.change();
      }
     
     @Override
@@ -50,5 +51,6 @@ public class RelationshipNodeRootNodeListener extends NodeAdapter{
                 gs.validate();
             }
         }
+        FileChangesManager.change();
     }
 }

@@ -2,6 +2,7 @@ package com.pl.erdc2.erdconstructor2.columneditor;
 
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import java.awt.Font;
@@ -181,6 +182,9 @@ public class RelationshipPanel extends JPanel{
     public void updatePanel(){
         if(selectedNode==null)
             return;
+        
+        FileChangesManager.setSetupMode(true);
+        
         Relationship rel = selectedNode.getRelationship();
         if(rel==null)
             return;
@@ -215,6 +219,8 @@ public class RelationshipPanel extends JPanel{
         entity2.addItemListener(entity2Listener);
         type1.addItemListener(type1Listener);
         type2.addItemListener(type2Listener);
+        
+        FileChangesManager.setSetupMode(false);
     }
     
     private class Entity1Listener implements ItemListener{

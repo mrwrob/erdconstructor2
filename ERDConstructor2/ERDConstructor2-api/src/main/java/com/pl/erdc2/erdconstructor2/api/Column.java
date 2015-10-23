@@ -22,6 +22,8 @@ public class Column extends Observable implements Serializable{
     }
 
     public void setName(String name) {
+        if(!name.equals(this.name))
+            FileChangesManager.change();
         this.name = name;
         setChanged();
         notifyObservers("name");
@@ -32,6 +34,8 @@ public class Column extends Observable implements Serializable{
     }
 
     public void setDescription(String description) {
+        if(!description.equals(this.description))
+            FileChangesManager.change();
         this.description = description;
         setChanged();
         notifyObservers("description");
@@ -45,6 +49,7 @@ public class Column extends Observable implements Serializable{
         this.primary = primary;
         setChanged();
         notifyObservers("primary");
+        FileChangesManager.change();
     }
 
     public String getType() {
@@ -55,6 +60,7 @@ public class Column extends Observable implements Serializable{
         this.type = type;
         setChanged();
         notifyObservers("type");
+        FileChangesManager.change();
     }
     
     public int getId(){

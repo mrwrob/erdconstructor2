@@ -5,6 +5,7 @@ import com.pl.erdc2.erdconstructor2.api.ColumnNode;
 import com.pl.erdc2.erdconstructor2.api.Entity;
 import com.pl.erdc2.erdconstructor2.api.EntityExplorerManagerProvider;
 import com.pl.erdc2.erdconstructor2.api.EntityNode;
+import com.pl.erdc2.erdconstructor2.api.FileChangesManager;
 import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import com.pl.erdc2.erdconstructor2.editor.EditorTopComponent;
@@ -105,6 +106,7 @@ public final class OpenFileAction implements ActionListener {
                     }
                     etc.getScene().revalidate();
                     etc.getScene().repaint();
+                    FileChangesManager.openFile(toAdd.getName(), toAdd);
                 }
             }
             catch (IOException | ClassNotFoundException | IntrospectionException ex) {
