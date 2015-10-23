@@ -11,12 +11,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -54,13 +51,9 @@ public class EntityPanel extends JPanel{
 
         table = new JTable();
         table.setModel(new ColumnTableItemModel());
-        JComboBox comboBox = new JComboBox();
-        for(String s : Column.DATA_TYPES)
-            comboBox.addItem(s);
-        comboBox.setEditable(true);
-        table.getColumnModel().getColumn(0).setCellEditor(new MyCellEditor(new JTextField()));        
+        table.getColumnModel().getColumn(0).setCellEditor(new MyCellEditor(new JTextField()));
+        table.getColumnModel().getColumn(1).setCellEditor(new MyCellEditor(new JTextField()));
         table.getColumnModel().getColumn(3).setCellEditor(new MyCellEditor(new JTextField()));
-        table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
         table.getColumnModel().getColumn(1).setPreferredWidth(120);
         table.getColumnModel().getColumn(2).setPreferredWidth(30);
         table.getColumnModel().getColumn(3).setPreferredWidth(300);

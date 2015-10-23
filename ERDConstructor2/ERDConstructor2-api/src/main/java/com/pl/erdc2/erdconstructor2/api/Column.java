@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 public class Column extends Observable implements Serializable{
-    public static final String[] DATA_TYPES={"int","float","bigint","date","datetime","time","tinyint","char","varchar","text","binary"};
+    
     private String name;
     private int id;
     private String description;
