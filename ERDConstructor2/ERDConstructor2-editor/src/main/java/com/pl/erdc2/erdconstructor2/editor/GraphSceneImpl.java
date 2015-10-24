@@ -193,6 +193,19 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         return null;
     }
     
+    public RelationshipWidget getRelationshipWidgetById(int id){
+        for(Widget w : connectionLayer.getChildren()){
+            if(w instanceof RelationshipWidget){
+                RelationshipWidget rw = (RelationshipWidget)w;
+                RelationshipNode en = rw.getBean();
+                Relationship r = en.getLookup().lookup(Relationship.class);
+                if(r.getId()==id)
+                    return rw;
+            }
+        }
+        return null;
+    }
+    
     @Override
     protected Widget attachEdgeWidget(Object e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -257,6 +270,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
 
     public void setAddRelationshipMode(boolean addRelationshipMode) {
         this.addRelationshipMode = addRelationshipMode;
+        this.associatedTopComponent.addRelationshipMode.setSelected(addRelationshipMode);
         if(addRelationshipMode==true || isAddEntityMode()){
             this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -277,6 +291,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
 
     public void setAddEntityMode(boolean addEntityMode) {
         this.addEntityMode = addEntityMode;
+        this.associatedTopComponent.addEntityButton.setSelected(addEntityMode);
         if(addEntityMode==true || isAddRelationshipMode()){
             this.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         }
