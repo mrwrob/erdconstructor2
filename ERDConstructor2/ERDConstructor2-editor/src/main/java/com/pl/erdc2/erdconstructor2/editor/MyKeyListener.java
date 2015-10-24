@@ -42,22 +42,8 @@ public class MyKeyListener extends WidgetAction.Adapter {
                 if (response == JOptionPane.NO_OPTION)
                     return WidgetAction.State.CHAIN_ONLY;
                 
-                int entityId = ew.getBean().getLookup().lookup(Entity.class).getId();
-                Node relationNodes[] = EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().getNodes();
-                ArrayList<Node> listRelationsToDelete = new ArrayList<>();
-                for(Node n: relationNodes){
-                    Relationship r = n.getLookup().lookup(Relationship.class);
-                    if(r.getSourceEntityId()== entityId || r.getDestinationEntityId() == entityId){
-                        listRelationsToDelete.add(n);
-                    }
-                }
-                Node[] arrayRelatonsToDelete = new Node[listRelationsToDelete.size()];
-                arrayRelatonsToDelete = listRelationsToDelete.toArray(arrayRelatonsToDelete);
-
-                EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(arrayRelatonsToDelete); 
+                EntityExplorerManagerProvider.deleteEntity(ew.getBean());
                 
-                Node[] toDelete = {ew.getBean()};
-                EntityExplorerManagerProvider.getEntityNodeRoot().getChildren().remove(toDelete);
             }
             else if(scene.getFocusedWidget() instanceof RelationshipWidget){
                 RelationshipWidget rw = (RelationshipWidget)scene.getFocusedWidget();
@@ -70,8 +56,7 @@ public class MyKeyListener extends WidgetAction.Adapter {
                 if (response == JOptionPane.NO_OPTION)
                     return WidgetAction.State.CHAIN_ONLY;
                 
-                Node delete[] = {rw.getBean()};
-                EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().remove(delete);
+                EntityExplorerManagerProvider.deleteRelationship(rw.getBean());
             }
         }
         return WidgetAction.State.CHAIN_ONLY;

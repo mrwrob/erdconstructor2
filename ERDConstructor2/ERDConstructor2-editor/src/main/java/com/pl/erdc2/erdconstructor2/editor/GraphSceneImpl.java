@@ -136,7 +136,9 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         }
         else
             conn.updateControlPointPosition();
+        conn.getActions().addAction(ActionFactory.createPopupMenuAction(new WidgetMenu(conn)));
         conn.getActions().addAction(new MySelectWidgetAction());
+        conn.getLabel().getActions().addAction(ActionFactory.createPopupMenuAction(new WidgetMenu(conn)));
         
         connectionLayer.addChild(conn);
         conn.getPoint().revalidate();
@@ -165,6 +167,7 @@ public class GraphSceneImpl extends GraphScene implements LookupListener, Serial
         else
             widget.setPreferredLocation(new Point(10+random.nextInt(400), 10+random.nextInt(400)));
         
+        widget.getActions().addAction(ActionFactory.createPopupMenuAction(new WidgetMenu(widget)));
         widget.getActions().addAction(new MyKeyListener(this));
         widget.getActions().addAction(new MyRelationshipAddModeAction());
         widget.getActions().addAction(new MyEntityAddModeAction(this));
