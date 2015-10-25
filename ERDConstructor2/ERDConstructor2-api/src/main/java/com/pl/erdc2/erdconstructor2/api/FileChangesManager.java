@@ -12,7 +12,6 @@ import org.openide.windows.TopComponent;
     "CTL_editorTopComponent=Diagram editor"
 })
 public class FileChangesManager{
-    private static final FileChangesManager instance = new FileChangesManager();
     private static String filename="";
     private static boolean fileWasChanged=false;
     private static TopComponent etc;
