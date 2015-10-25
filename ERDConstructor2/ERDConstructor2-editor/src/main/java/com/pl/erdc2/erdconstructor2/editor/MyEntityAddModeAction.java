@@ -7,6 +7,7 @@ import com.pl.erdc2.erdconstructor2.api.EntityNode;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.beans.IntrospectionException;
+import java.beans.PropertyVetoException;
 import org.apache.log4j.Logger;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
@@ -58,6 +59,18 @@ public class MyEntityAddModeAction extends WidgetAction.Adapter {
                 shadow.setVisible(false);
                 shadow.repaint();
                 shadow.bringToFront();
+                
+                EntityWidget ew = scene.getEntityWidgetById(node.getLookup().lookup(Entity.class).getId());
+                scene.setFocusedWidget(ew);
+                scene.repaint();
+                Node[] list = {node};
+                try {
+                    EntityExplorerManagerProvider.getExplorerManager().setSelectedNodes(list);
+                } catch (PropertyVetoException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+
+                scene.setAddEntityMode(false);
             } catch (IntrospectionException ex) {
                 Exceptions.printStackTrace(ex);
                 logger.error(ex);

@@ -6,6 +6,7 @@ import com.pl.erdc2.erdconstructor2.api.Relationship;
 import com.pl.erdc2.erdconstructor2.api.RelationshipNode;
 import java.awt.BasicStroke;
 import java.beans.IntrospectionException;
+import java.beans.PropertyVetoException;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
 import org.netbeans.api.visual.anchor.AnchorFactory;
@@ -94,7 +95,14 @@ public class MyRelationshipAddModeAction extends WidgetAction.Adapter {
                 node = new RelationshipNode(r);
                 Node[] toAdd = {node};
                 EntityExplorerManagerProvider.getRelatioshipNodeRoot().getChildren().add(toAdd);
-            } catch (IntrospectionException ex) {
+                
+                RelationshipWidget rw = gs.getRelationshipWidgetById(node.getLookup().lookup(Relationship.class).getId());
+                gs.setFocusedWidget(rw);
+                gs.repaint();
+                Node[] list = {node};
+                EntityExplorerManagerProvider.getExplorerManager().setSelectedNodes(list);
+                gs.setAddRelationshipMode(false);
+            } catch (IntrospectionException|PropertyVetoException ex) {
                 Exceptions.printStackTrace(ex);
             }
             
